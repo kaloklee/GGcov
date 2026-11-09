@@ -3,3 +3,6 @@
 ^Meta$
 ^README\.html$
 ^LICENSE$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
