@@ -1,0 +1,280 @@
+---
+title: "Introduction to GGcov: Gamma-Gamma Spend Models with Covariates"
+author: "Ka Lok Lee"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to GGcov: Gamma-Gamma Spend Models with Covariates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.width  = 7,
+  fig.height = 5,
+  warning  = FALSE,
+  message  = FALSE
+)
+```
+
+## Package Overview
+
+`GGcov` implements maximum likelihood estimation and diagnostic plotting of the gamma-gamma model of spend per transaction, with time-varying and time-invariant covariates (Fader and Hardie 2024). The gamma-gamma model of spend is attributed to Colombo and Jiang (1999), and Fader et al. (2005) used it for the monetary-value component of their customer lifetime value (CLV) framework.
+
+| Function | Purpose |
+|:---|:---|
+| `GGcov_MLE()` | Maximum likelihood estimation with covariates (time-varying, static, or none) |
+| `print()` | S3 print method displaying estimates, SEs, and Wald confidence intervals |
+| `GGcov_plot_mixing()` | Plot the gamma mixing distribution of the baseline spending rate $\nu_0$ across the customer base |
+| `GGcov_expected_spend()` | Posterior conditional expectation of the monetary value of a future transaction, given the customer's history and the (known) covariate values of that transaction |
+
+---
+
+## The Gamma-Gamma Model with Covariates
+
+The model *without* covariates rests on three assumptions: a customer's transaction monetary values vary randomly around their average; the average transaction monetary value varies across customers but not over time for a given customer; and the distribution of the averages is independent of the transaction process (Fader and Hardie 2013).
+
+Formally, for a customer with $x$ transactions, let $z_1, \dots, z_x$ denote the monetary value of each transaction. Given the customer's baseline rate $\nu_0$, the values are independent and gamma distributed with shape $p$ and rate $\nu_j$, where the covariates $\mathbf{w}_j$ in effect at transaction $j$ shift the rate $\nu_0$:
+
+$$
+z_j \mid \nu_0 \sim \text{Gamma}\left(p,\ \nu_j\right), \qquad \nu_j = \nu_0 e^{-\mathbf{w}_j\beta'},
+$$
+
+so the mean of $z_j$ is $p\, e^{\mathbf{w}_j\beta'} / \nu_0$. Across customers, $\nu_0 \sim \text{Gamma}(q, \gamma)$ with shape $q$ and rate $\gamma$ captures unobserved heterogeneity.
+
+$$
+L(p, q, \gamma, \beta) = \frac{\left\{\prod_{j=1}^{x} z_j\right\}^{p-1} A(x)}{\Gamma(p)^x} \cdot \frac{\Gamma(px + q)}{\Gamma(q)} \cdot \frac{\gamma^q}{\left(\gamma + B(x)\right)^{px+q}},
+$$
+
+where $A(x) = e^{-p\sum_{j=1}^{x} \mathbf{w}_j\beta'}$ and $B(x) = \sum_{j=1}^{x} z_j e^{-\mathbf{w}_j\beta'}$. The full likelihood is the product over customers.
+
+### Required Format for the Data
+
+Data must be in **transaction (long) format**:
+
+* One row per transaction.
+* A customer identifier column linking rows to the same customer.
+* The amount spent, which must be strictly positive (drop zero-value transactions first).
+* The covariates in effect at the time of each transaction.
+
+| Column | Type | Description |
+|:---|:---|:---|
+| `Id` | Identifier | Unique customer identifier (numeric, character, or factor) |
+| `Price` | Numeric | Amount spent in the transaction (strictly positive) |
+| `discount, gender, channel` | Numeric / Factor | Dynamic or static covariates (continuous, binary, or multi-level) |
+
+Row order does not matter, and no time index is needed. A static covariate is included by repeating its value on each of the customer's rows. Factor and character covariates are expanded into dummy variables through standard R formula mechanics (`model.matrix`, treatment contrasts).
+
+## Example 1: Time-Varying Covariates (`spend_data_sample`)
+
+> **Note on Datasets:** To ensure this vignette builds rapidly within CRAN limits, we evaluate the models using `spend_data_sample`, a small subset of the package's full simulated data intended for quick trials and interactive exploration. For full empirical analyses, use the entire cohort via `spend_data <- GGcov::spend_data`. The syntax remains identical.
+
+The data are simulated (see `?spend_data`) to mimic the structure of retail transaction logs with covariates, such as the apparel example in the CLVTools vignette (Bachmann et al. 2025). Each row represents one transaction. We print the first rows to illustrate the structure.
+
+```{r load-varying}
+library(GGcov)
+
+# Load the quick-start sample dataset
+spend_data_sample <- GGcov::spend_data_sample
+
+# Inspect the transaction data structure
+head(spend_data_sample, 10)
+```
+
+We estimate the model by directly supplying the formula and the subject identifier.
+
+```{r fit-varying}
+fit_varying <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+
+# View parameter estimates, standard errors, and Wald confidence intervals
+print(fit_varying)
+```
+
+### Interpreting the Coefficients
+
+Each coefficient $\beta_k$ acts multiplicatively on spend: a one-unit increase in a numeric covariate, or a switch from the reference level to a given factor level, multiplies mean spend per transaction by $e^{\beta_k}$. A positive $\beta_k$ raises spend; a negative $\beta_k$ lowers it. Each non-reference level of a factor gets its own coefficient, labeled with the variable name and the level (for example `channelweb`).
+
+The mixing distribution of $\nu_0$ describes customers at zero for numeric covariates and at the reference level of each factor. Coefficients are expressed per unit of each covariate, so raw coefficients are not comparable across covariates measured on different scales. To make an effect concrete, compute $e^{\beta_k \Delta}$ for a meaningful change $\Delta$. An effect is distinguishable from zero when the confidence interval for $\beta_k$ excludes $0$.
+
+### Visualizing the Mixing Distribution
+
+We can visualize the implied distribution of the baseline spending rate $\nu_0$ across customers, a gamma distribution with shape $q$ and rate $\gamma$:
+
+```{r plot-mixing}
+GGcov_plot_mixing(fit_varying)
+```
+
+> **A note on $q$ and $\gamma$:** The two parameters are often highly correlated, because many $(q, \gamma)$ combinations imply very similar distributions of $\nu_0$. Interpret them jointly, for example through the mixing distribution shown by `GGcov_plot_mixing()`, rather than one at a time.
+
+
+### Posterior Conditional Expectation of Future Spend
+
+A natural next question is how much a customer will spend on their *next* transaction. `GGcov_expected_spend()` computes the **conditional expectation of the monetary value of a future transaction $Z_k$, given the customer's observed history $(z_1, \dots, z_x)$ with covariates $(\mathbf{w}_1, \dots, \mathbf{w}_x)$, and the covariate values $\mathbf{w}_k$ of the future transaction, which are assumed known**. The covariates of a future transaction are inputs, not predictions: for example, the discount planned for the next purchase.
+
+The derivation has three steps (Fader and Hardie 2024).
+
+1. *Posterior of the customer's baseline rate.* The prior $\nu_0 \sim \text{Gamma}(q, \gamma)$ multiplied by the customer's likelihood, which as a function of $\nu_0$ is proportional to $\nu_0^{px} e^{-\nu_0 B(x)}$, gives
+
+$$
+\nu_0 \mid \text{history} \sim \text{Gamma}\left(px + q,\ \gamma + B(x)\right).
+$$
+
+   The history enters only through the number of transactions $x$ and $B(x) = \sum_{i=1}^{x} z_i e^{-\mathbf{w}_i\beta'}$, the observed spends rescaled to the baseline (all covariates at zero).
+
+2. *Expected spend given $\nu_0$.* For a future transaction with covariates $\mathbf{w}_k$,
+
+$$
+E(Z_k \mid \nu_0, \mathbf{w}_k) = \frac{p\, e^{\mathbf{w}_k\beta'}}{\nu_0}.
+$$
+
+3. *Average over the posterior of $\nu_0$.* For a gamma distribution with shape $px + q > 1$ and rate $\gamma + B(x)$, $E(1/\nu_0 \mid \text{history}) = (\gamma + B(x)) / (px + q - 1)$. Therefore
+
+$$
+E(Z_k \mid z_1, \dots, z_x, \mathbf{w}_1, \dots, \mathbf{w}_x, \mathbf{w}_k) = \frac{p\left(\gamma + B(x)\right)}{px + q - 1}\, e^{\mathbf{w}_k\beta'}.
+$$
+
+   This is Equation (8) of Fader and Hardie (2024).
+
+The expression can be read as a weighted average. Writing $B(x)/x$ for the customer's average spend adjusted to the baseline,
+
+$$
+E(Z_k \mid \cdot) = e^{\mathbf{w}_k\beta'} \left[ \frac{px}{px + q - 1} \cdot \frac{B(x)}{x} + \frac{q - 1}{px + q - 1} \cdot \frac{p\gamma}{q - 1} \right],
+$$
+
+so the prediction shrinks the customer's own (baseline-adjusted) average toward the population mean $p\gamma/(q-1)$, and the weight on the customer's own history grows with the number of transactions $x$. The factor $e^{\mathbf{w}_k\beta'}$ then moves the prediction to the covariate values of the future transaction. A customer with no history ($x = 0$ and $B(x) = 0$) gets the prior expectation $p\gamma e^{\mathbf{w}_k\beta'}/(q-1)$, which requires $q > 1$.
+
+Here we predict the next transaction of every customer in the sample at a 10% discount, keeping each customer's gender and channel (taken from their last observed row). `newdata` has one row per future transaction to predict, and `history` holds the observed transactions:
+
+```{r expected-spend-varying}
+last_rows <- spend_data_sample[!duplicated(spend_data_sample$Id, fromLast = TRUE), ]
+future <- last_rows[, c("Id", "discount", "gender", "channel")]
+future$discount <- 0.1
+
+pred_varying <- GGcov_expected_spend(fit_varying,
+                                     newdata = future,
+                                     history = spend_data_sample)
+head(pred_varying)
+```
+
+The result has one row per row of `newdata`, with the number of past transactions used (`n_trans`) and the expected spend. Because the future covariates are inputs, the same customers can be compared under different scenarios, here no discount against a 30% discount:
+
+```{r expected-spend-scenarios}
+spend_0  <- GGcov_expected_spend(fit_varying, transform(future, discount = 0),
+                                 spend_data_sample)$expected_spend
+spend_30 <- GGcov_expected_spend(fit_varying, transform(future, discount = 0.3),
+                                 spend_data_sample)$expected_spend
+
+head(data.frame(Id = future$Id, no_discount = spend_0, discount_30 = spend_30))
+```
+
+---
+
+## Example 2: Static Covariates
+
+If covariates are fixed for each customer, repeat their values across the customer's rows. The same function applies:
+
+```{r fit-static}
+fit_static <- GGcov_MLE(
+  Price ~ gender + channel,
+  data    = spend_data_sample,
+  subject = "Id",
+  level   = 0.99
+)
+
+print(fit_static)
+```
+
+
+### Posterior Conditional Expectation of Future Spend
+
+With static covariates the future covariate values are known by construction: they are the customer's own, unchanged, so $\mathbf{w}_k = \mathbf{w}$ for every transaction. Then $B(x) = e^{-\mathbf{w}\beta'} \sum_{i=1}^{x} z_i = y\, e^{-\mathbf{w}\beta'}$, where $y$ is the customer's total observed spend, and the expression from Example 1 reduces to
+
+$$
+E(Z_k \mid z_1, \dots, z_x, \mathbf{w}) = \frac{p\left(\gamma + y\, e^{-\mathbf{w}\beta'}\right)}{px + q - 1}\, e^{\mathbf{w}\beta'},
+$$
+
+which is Equation (4) of Fader and Hardie (2024). The time-varying expression therefore contains the static one as a special case, and the same function computes both. We supply each customer's static covariates as the covariates of the next transaction:
+
+```{r expected-spend-static}
+customers <- spend_data_sample[!duplicated(spend_data_sample$Id),
+                               c("Id", "gender", "channel")]
+
+pred_static <- GGcov_expected_spend(fit_static,
+                                    newdata = customers,
+                                    history = spend_data_sample)
+head(pred_static)
+```
+
+---
+
+## Example 3: The Null Model
+
+Use `~ 1` to fit the model without covariates, which estimates only $p$, $q$ and $\gamma$:
+
+```{r fit-null}
+fit_null <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
+print(fit_null)
+```
+
+The null model is nested in any covariate model (all coefficients equal to zero), so a likelihood-ratio test compares them. Both models must be fitted to the same data. The statistic is compared to a chi-square distribution with one degree of freedom per coefficient:
+
+```{r lr-test}
+lr <- 2 * (fit_null$value - fit_varying$value)
+df <- length(fit_varying$par) - length(fit_null$par)
+pchisq(lr, df = df, lower.tail = FALSE)
+```
+
+
+### Posterior Conditional Expectation of Future Spend
+
+Without covariates, $e^{\mathbf{w}_k\beta'} = 1$ and $B(x) = \sum_{i=1}^{x} z_i = x\bar{z}$, where $\bar{z}$ is the customer's average observed spend. The conditional expectation of a future transaction's monetary value given the history then simplifies to
+
+$$
+E(Z_k \mid z_1, \dots, z_x) = \frac{p\left(\gamma + x\bar{z}\right)}{px + q - 1} = \frac{px}{px + q - 1}\, \bar{z} + \frac{q - 1}{px + q - 1} \cdot \frac{p\gamma}{q - 1},
+$$
+
+a weighted average of the customer's observed average spend and the population mean $p\gamma/(q-1)$ (Fader and Hardie 2013). No covariate values are needed, so `newdata` only has to identify the customers:
+
+```{r expected-spend-null}
+customer_ids <- data.frame(Id = unique(spend_data_sample$Id))
+
+pred_null <- GGcov_expected_spend(fit_null,
+                                  newdata = customer_ids,
+                                  history = spend_data_sample)
+head(pred_null)
+```
+
+Comparing the prediction with each customer's raw average shows the shrinkage: customers with few transactions are pulled most strongly toward the population mean.
+
+```{r expected-spend-shrinkage}
+observed <- aggregate(Price ~ Id, data = spend_data_sample, FUN = mean)
+names(observed)[2] <- "observed_mean"
+
+comparison <- merge(pred_null, observed, by = "Id")
+head(comparison[order(comparison$n_trans), ])
+```
+
+---
+
+## References
+
+* Fader, P. S., & Hardie, B. G. S. (2013). *The Gamma-Gamma Model of Monetary Value* (Research Note No. 025). https://brucehardie.com/notes/025/
+* Fader, P. S., & Hardie, B. G. S. (2024). *Incorporating Covariates in the Gamma-Gamma Spend Model* (Research Note No. 045). https://brucehardie.com/notes/045/
+* Fader, P. S., Hardie, B. G. S., & Lee, K. L. (2005). RFM and CLV: Using iso-value curves for customer base analysis. *Journal of Marketing Research*, 42(4), 415–430.
+* Colombo, R., & Jiang, W. (1999). A stochastic RFM model. *Journal of Interactive Marketing*, 13(3), 2–12.
+* Bachmann, P., Kuebler, N., Meierer, M., Naef, J., Oblander, E., & Schilter, P. (2025). *CLVTools: Tools for Customer Lifetime Value Estimation*. R package version 0.12.1. https://github.com/bachmannpatrick/clvtools
+
+---
+
+## Session Information
+
+```{r session-info}
+sessionInfo()
+```
