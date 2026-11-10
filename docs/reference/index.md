@@ -8,6 +8,8 @@
   : Fit the Equation (6) Model by Maximum Likelihood
 - [`GGcov_expected_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_expected_spend.md)
   : Expected Spend per Transaction
+- [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_avg_spend.md)
+  : Plot Observed versus Fitted Average Spend
 - [`GGcov_plot_mixing()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_mixing.md)
   : Plot the Mixing Distribution of a Fitted Gamma-Gamma Model
 - [`print(`*`<GGcov>`*`)`](https://kaloklee.github.io/GGcov/reference/print.GGcov.md)

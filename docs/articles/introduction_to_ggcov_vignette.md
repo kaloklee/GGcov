@@ -14,6 +14,7 @@ lifetime value (CLV) framework.
 | [`GGcov_MLE()`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md) | Maximum likelihood estimation with covariates (time-varying, static, or none) |
 | [`print()`](https://rdrr.io/r/base/print.html) | S3 print method displaying estimates, SEs, and Wald confidence intervals |
 | [`GGcov_plot_mixing()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_mixing.md) | Plot the gamma mixing distribution of the baseline spending rate $`\nu_0`$ across the customer base |
+| [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_avg_spend.md) | Compare the observed distribution of customers’ average spend per transaction with the distribution implied by the fitted model |
 | [`GGcov_expected_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_expected_spend.md) | Posterior conditional expectation of the monetary value of a future transaction, given the customer’s history and the (known) covariate values of that transaction |
 
 ------------------------------------------------------------------------
@@ -175,6 +176,98 @@ GGcov_plot_mixing(fit_varying)
 > [`GGcov_plot_mixing()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_mixing.md),
 > rather than one at a time.
 
+### Checking the Fit: Observed versus Fitted Average Spend
+
+A natural check of the fitted model compares the observed distribution
+of each customer’s average spend per transaction,
+$`\bar{z} = \frac{1}{x}\sum_{j=1}^{x} z_j`$, with the distribution the
+model implies (Fader and Hardie 2013, Figure 3).
+[`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_avg_spend.md)
+draws both.
+
+**The model density of $`\bar{z}`$.** Given $`\nu_0`$, the total spend
+$`S = \sum_{j=1}^{x} z_j`$ is a sum of independent gamma variables with
+the same shape $`p`$ and rates $`\nu_0 e^{-\mathbf{w}_j\beta'}`$.
+
+*With the same covariate effect on every transaction* (no covariates, or
+static covariates), the rates are equal, so $`S \mid \nu_0`$ is gamma
+with shape $`px`$. Integrating out
+$`\nu_0 \sim \text{Gamma}(q, \gamma)`$ gives a closed form for the
+density of $`\bar{z}`$, and the fitted curve is exact.
+
+*With time-varying covariates*, the rates differ and the sum has no
+closed form. We approximate $`S \mid \nu_0`$ by a single gamma
+distribution with the same mean and variance. Write
+$`a_1 = \sum_{j} e^{\mathbf{w}_j\beta'}`$ and
+$`a_2 = \sum_{j} e^{2\mathbf{w}_j\beta'}`$. Given $`\nu_0`$, the mean of
+$`S`$ is $`p a_1/\nu_0`$ and its variance is $`p a_2/\nu_0^2`$. A
+$`\text{Gamma}(k, r)`$ distribution has mean $`k/r`$ and variance
+$`k/r^2`$, so matching the two gives
+
+``` math
+k = \frac{p\, a_1^2}{a_2}, \qquad r = \nu_0 \frac{a_1}{a_2}.
+```
+
+The shape $`k`$ does not depend on $`\nu_0`$, so $`\nu_0`$ integrates
+out exactly as in the case without covariates, with $`px`$ replaced by
+$`k`$. With $`c = a_2/(x a_1)`$, the density of $`\bar{z}`$ for a
+customer with $`x`$ transactions is
+
+``` math
+f(\bar{z}) = \frac{1}{c}\, \frac{\Gamma(k + q)}{\Gamma(k)\,\Gamma(q)}\, \frac{\gamma^q \left(\bar{z}/c\right)^{k-1}}{\left(\gamma + \bar{z}/c\right)^{k+q}}.
+```
+
+When all of a customer’s covariate effects are equal, $`k = px`$ and the
+expression is the exact density, so the same formula covers every case.
+The approximation reproduces the mean and variance of $`\bar{z}`$
+exactly. The fitted curve is the average of these densities over the
+customers in the data.
+
+``` r
+
+GGcov_plot_avg_spend(fit_varying, spend_data_sample)
+```
+
+![](introduction_to_ggcov_vignette_files/figure-html/avg-spend-varying-1.png)
+
+The grey curve is a kernel density estimate of the observed averages and
+the blue curve is the fitted model. Because this model has time-varying
+covariates, the note above the plot reports how many customers’
+densities use the approximation.
+
+**A hold-out check.** The fitted parameters are used as they are, and
+nothing is refitted, so `data` can be any transaction data frame with
+the same columns. This allows a check on customers the model has not
+seen: fit the model on one part of the customers and compare the model
+with the observed averages of the rest. The split must be by customer,
+so that each customer’s transactions stay together.
+
+``` r
+
+set.seed(2024)
+ids       <- unique(spend_data_sample$Id)
+train_ids <- sample(ids, length(ids) / 2)
+
+train <- spend_data_sample[spend_data_sample$Id %in% train_ids, ]
+test  <- spend_data_sample[!spend_data_sample$Id %in% train_ids, ]
+
+fit_train <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = train,
+  subject = "Id"
+)
+
+GGcov_plot_avg_spend(fit_train, test)
+```
+
+![](introduction_to_ggcov_vignette_files/figure-html/avg-spend-holdout-1.png)
+
+The blue curve comes from the model fitted on `train` alone, and the
+grey curve shows the observed averages of the customers in `test`. The
+two agree when the model describes new customers well. Every factor
+level in `test` must also appear in `train`, because the model has no
+coefficient for a level it has not seen.
+
 ### Posterior Conditional Expectation of Future Spend
 
 A natural next question is how much a customer will spend on their
@@ -313,6 +406,19 @@ print(fit_static)
 #> Convergence code: 0
 ```
 
+### Checking the Fit
+
+With static covariates, each customer’s covariate effect is the same on
+every transaction, so the fitted density of $`\bar{z}`$ is exact and no
+approximation note appears:
+
+``` r
+
+GGcov_plot_avg_spend(fit_static, spend_data_sample)
+```
+
+![](introduction_to_ggcov_vignette_files/figure-html/avg-spend-static-1.png)
+
 ### Posterior Conditional Expectation of Future Spend
 
 With static covariates the future covariate values are known by
@@ -384,6 +490,19 @@ pchisq(lr, df = df, lower.tail = FALSE)
 #> [1] 6.545324e-15
 ```
 
+### Checking the Fit
+
+Without covariates, $`a_1 = a_2 = x`$, so $`k = px`$ and the fitted
+density of $`\bar{z}`$ is exact. This is the comparison shown in Figure
+3 of Fader and Hardie (2013):
+
+``` r
+
+GGcov_plot_avg_spend(fit_null, spend_data_sample)
+```
+
+![](introduction_to_ggcov_vignette_files/figure-html/avg-spend-null-1.png)
+
 ### Posterior Conditional Expectation of Future Spend
 
 Without covariates, $`e^{\mathbf{w}_k\beta'} = 1`$ and
@@ -440,6 +559,12 @@ head(comparison[order(comparison$n_trans), ])
 
 ## References
 
+- Bachmann, P., Kuebler, N., Meierer, M., Naef, J., Oblander, E., &
+  Schilter, P. (2025). *CLVTools: Tools for Customer Lifetime Value
+  Estimation*. R package version 0.12.1.
+  <https://github.com/bachmannpatrick/clvtools>
+- Colombo, R., & Jiang, W. (1999). A stochastic RFM model. *Journal of
+  Interactive Marketing*, 13(3), 2–12.
 - Fader, P. S., & Hardie, B. G. S. (2013). *The Gamma-Gamma Model of
   Monetary Value* (Research Note No. 025).
   <https://brucehardie.com/notes/025/>
@@ -449,12 +574,6 @@ head(comparison[order(comparison$n_trans), ])
 - Fader, P. S., Hardie, B. G. S., & Lee, K. L. (2005). RFM and CLV:
   Using iso-value curves for customer base analysis. *Journal of
   Marketing Research*, 42(4), 415–430.
-- Colombo, R., & Jiang, W. (1999). A stochastic RFM model. *Journal of
-  Interactive Marketing*, 13(3), 2–12.
-- Bachmann, P., Kuebler, N., Meierer, M., Naef, J., Oblander, E., &
-  Schilter, P. (2025). *CLVTools: Tools for Customer Lifetime Value
-  Estimation*. R package version 0.12.1.
-  <https://github.com/bachmannpatrick/clvtools>
 
 ------------------------------------------------------------------------
 
