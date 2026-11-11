@@ -58,7 +58,7 @@
       <h1>Introduction to GGcov: Gamma-Gamma Spend Models with Covariates</h1>
                         <h4 data-toc-skip class="author">Ka Lok Lee</h4>
             
-            <h4 data-toc-skip class="date">2026-11-09</h4>
+            <h4 data-toc-skip class="date">2026-11-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/kaloklee/GGcov/blob/HEAD/vignettes/introduction_to_ggcov_vignette.Rmd" class="external-link"><code>vignettes/introduction_to_ggcov_vignette.Rmd</code></a></small>
       <div class="d-none name"><code>introduction_to_ggcov_vignette.Rmd</code></div>
@@ -344,76 +344,210 @@ with the distribution the model implies (Fader and Hardie 2013, Figure
 3). <code><a href="../reference/GGcov_plot_avg_spend.html">GGcov_plot_avg_spend()</a></code> draws both.</p>
 <p><strong>The model density of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>.</strong>
-Given
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
-the total spend
+For a customer with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+transactions, let
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></msubsup><msub><mi>z</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">S = \sum_{j=1}^{x} z_j</annotation></semantics></math>
-is a sum of independent gamma variables with the same shape
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
-and rates
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><mi>−</mi><msub><mi mathvariant="bold-italic">𝒘</mi><mi>j</mi></msub><msup><mi>β</mi><mo>′</mo></msup></mrow></msup></mrow><annotation encoding="application/x-tex">\nu_0 e^{-\mathbf{w}_j\beta'}</annotation></semantics></math>.</p>
-<p><em>With the same covariate effect on every transaction</em> (no
-covariates, or static covariates), the rates are equal, so
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">S \mid \nu_0</annotation></semantics></math>
-is gamma with shape
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">px</annotation></semantics></math>.
-Integrating out
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mn>0</mn></msub><mo>∼</mo><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>,</mo><mi>γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu_0 \sim \text{Gamma}(q, \gamma)</annotation></semantics></math>
-gives a closed form for the density of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>,
-and the fitted curve is exact.</p>
-<p><em>With time-varying covariates</em>, the rates differ and the sum
-has no closed form. We approximate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">S \mid \nu_0</annotation></semantics></math>
-by a single gamma distribution with the same mean and variance. Write
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo>=</mo><msub><mo>∑</mo><mi>j</mi></msub><msup><mi>e</mi><mrow><msub><mi mathvariant="bold-italic">𝒘</mi><mi>j</mi></msub><msup><mi>β</mi><mo>′</mo></msup></mrow></msup></mrow><annotation encoding="application/x-tex">a_1 = \sum_{j} e^{\mathbf{w}_j\beta'}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>2</mn></msub><mo>=</mo><msub><mo>∑</mo><mi>j</mi></msub><msup><mi>e</mi><mrow><mn>2</mn><msub><mi mathvariant="bold-italic">𝒘</mi><mi>j</mi></msub><msup><mi>β</mi><mo>′</mo></msup></mrow></msup></mrow><annotation encoding="application/x-tex">a_2 = \sum_{j} e^{2\mathbf{w}_j\beta'}</annotation></semantics></math>.
+be the total spend, so that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo>=</mo><mi>S</mi><mi>/</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\bar{z} = S/x</annotation></semantics></math>,
+and write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>j</mi></msub><mo>=</mo><msub><mi mathvariant="bold-italic">𝒘</mi><mi>j</mi></msub><msup><mi>β</mi><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">\eta_j = \mathbf{w}_j\beta'</annotation></semantics></math>.
+The model says that, given the customer’s
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
+the transactions are independent with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>j</mi></msub><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub><mo>∼</mo><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>ν</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>η</mi><mi>j</mi></msub></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">z_j \mid \nu_0 \sim \text{Gamma}(p,\ \nu_0 e^{-\eta_j})</annotation></semantics></math>.
+We need the distribution of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>
+after averaging over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mn>0</mn></msub><mo>∼</mo><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>,</mo><mi>γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu_0 \sim \text{Gamma}(q, \gamma)</annotation></semantics></math>.</p>
+<p>With time-varying covariates, the rates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>η</mi><mi>j</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">\nu_0 e^{-\eta_j}</annotation></semantics></math>
+differ across a customer’s transactions, and a sum of gamma variables
+with different rates has no simple closed form. We tackle this problem
+with the Satterthwaite–Welch approximation (Satterthwaite 1946; Welch
+1947), which was developed for weighted sums of chi-square variables,
+such as combinations of variance estimates. A chi-square variable with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+degrees of freedom is a gamma variable with shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">d/2</annotation></semantics></math>
+and rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">1/2</annotation></semantics></math>,
+so the same moment matching applies to gamma variables with any positive
+shape
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>.
+The derivation follows the stages of Fader and Hardie (2013): the
+distribution of the total spend given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
+the distribution of the average given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
+and then the integration over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>.</p>
+<ol style="list-style-type: decimal">
+<li>
+<em>The total spend given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>.</em>
 Given
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
-the mean of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
-is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><msub><mi>a</mi><mn>1</mn></msub><mi>/</mi><msub><mi>ν</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">p a_1/\nu_0</annotation></semantics></math>
-and its variance is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><msub><mi>a</mi><mn>2</mn></msub><mi>/</mi><msubsup><mi>ν</mi><mn>0</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">p a_2/\nu_0^2</annotation></semantics></math>.
-A
+transaction
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+has mean
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><msub><mi>η</mi><mi>j</mi></msub></msup><mi>/</mi><msub><mi>ν</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">p\, e^{\eta_j}/\nu_0</annotation></semantics></math>
+and variance
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mn>2</mn><msub><mi>η</mi><mi>j</mi></msub></mrow></msup><mi>/</mi><msubsup><mi>ν</mi><mn>0</mn><mn>2</mn></msubsup></mrow><annotation encoding="application/x-tex">p\, e^{2\eta_j}/\nu_0^2</annotation></semantics></math>.
+The transactions are independent, so their means and variances add. With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>1</mn></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></msubsup><msup><mi>e</mi><msub><mi>η</mi><mi>j</mi></msub></msup></mrow><annotation encoding="application/x-tex">a_1 = \sum_{j=1}^{x} e^{\eta_j}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>2</mn></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></msubsup><msup><mi>e</mi><mrow><mn>2</mn><msub><mi>η</mi><mi>j</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">a_2 = \sum_{j=1}^{x} e^{2\eta_j}</annotation></semantics></math>,</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>p</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub></mrow><msub><mi>ν</mi><mn>0</mn></msub></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mtext mathvariant="normal">Var</mtext><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi>p</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>2</mn></msub></mrow><msubsup><mi>ν</mi><mn>0</mn><mn>2</mn></msubsup></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+E(S \mid \nu_0) = \frac{p\, a_1}{\nu_0}, \qquad \text{Var}(S \mid \nu_0) = \frac{p\, a_2}{\nu_0^2}.
+</annotation></semantics></math></p>
+<p>A
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{Gamma}(k, r)</annotation></semantics></math>
 distribution has mean
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>/</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">k/r</annotation></semantics></math>
 and variance
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>/</mi><msup><mi>r</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">k/r^2</annotation></semantics></math>,
-so matching the two gives</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mfrac><mrow><mi>p</mi><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mn>1</mn><mn>2</mn></msubsup></mrow><msub><mi>a</mi><mn>2</mn></msub></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>r</mi><mo>=</mo><msub><mi>ν</mi><mn>0</mn></msub><mfrac><msub><mi>a</mi><mn>1</mn></msub><msub><mi>a</mi><mn>2</mn></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
-k = \frac{p\, a_1^2}{a_2}, \qquad r = \nu_0 \frac{a_1}{a_2}.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>/</mi><msup><mi>r</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">k/r^2</annotation></semantics></math>.
+Setting the two pairs equal and solving gives the approximation</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub><mspace width="0.278em"></mspace><mo>≈</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>,</mo><mi>r</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>=</mo><mfrac><mrow><mi>p</mi><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mn>1</mn><mn>2</mn></msubsup></mrow><msub><mi>a</mi><mn>2</mn></msub></mfrac><mo>,</mo><mspace width="1.0em"></mspace><mi>r</mi><mo>=</mo><msub><mi>ν</mi><mn>0</mn></msub><mspace width="0.167em"></mspace><mfrac><msub><mi>a</mi><mn>1</mn></msub><msub><mi>a</mi><mn>2</mn></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S \mid \nu_0 \;\approx\; \text{Gamma}(k, r), \qquad k = \frac{p\, a_1^2}{a_2}, \quad r = \nu_0\, \frac{a_1}{a_2}.
 </annotation></semantics></math></p>
-<p>The shape
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-does not depend on
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
-so
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>
-integrates out exactly as in the case without covariates, with
+<ol start="2" style="list-style-type: decimal">
+<li>
+<em>The average spend given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>.</em>
+Dividing a gamma variable by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+multiplies its rate by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
+so the average
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo>=</mo><mi>S</mi><mi>/</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">\bar{z} = S/x</annotation></semantics></math>
+satisfies</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub><mspace width="0.278em"></mspace><mo>≈</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">Gamma</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>k</mi><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>ν</mi><mn>0</mn></msub><mspace width="0.167em"></mspace><mfrac><mrow><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub></mrow><msub><mi>a</mi><mn>2</mn></msub></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\bar{z} \mid \nu_0 \;\approx\; \text{Gamma}\left(k,\ \nu_0\, \frac{x\, a_1}{a_2}\right).
+</annotation></semantics></math></p>
+<ol start="3" style="list-style-type: decimal">
+<li>
+<em>Integrating out
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>.</em>
+Averaging this density over
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ν</mi><mn>0</mn></msub><mo>∼</mo><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo>,</mo><mi>γ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu_0 \sim \text{Gamma}(q, \gamma)</annotation></semantics></math>
+works exactly as in Fader and Hardie (2013), with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">px</annotation></semantics></math>
 replaced by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.
-With
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>=</mo><msub><mi>a</mi><mn>2</mn></msub><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><msub><mi>a</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">c = a_2/(x a_1)</annotation></semantics></math>,
-the density of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>
-for a customer with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
-transactions is</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mi>c</mi></mfrac><mspace width="0.167em"></mspace><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mspace width="0.167em"></mspace><mfrac><mrow><msup><mi>γ</mi><mi>q</mi></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mi>/</mi><mi>c</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msup></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>+</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mi>/</mi><mi>c</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>k</mi><mo>+</mo><mi>q</mi></mrow></msup></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
-f(\bar{z}) = \frac{1}{c}\, \frac{\Gamma(k + q)}{\Gamma(k)\,\Gamma(q)}\, \frac{\gamma^q \left(\bar{z}/c\right)^{k-1}}{\left(\gamma + \bar{z}/c\right)^{k+q}}.
+replaced by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub><mi>/</mi><msub><mi>a</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x\, a_1/a_2</annotation></semantics></math>.
+The density of the average spend of a customer with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+transactions is</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>⋅</mo><mfrac><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub><mi>/</mi><msub><mi>a</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup><msup><mover><mi>z</mi><mo accent="true">‾</mo></mover><mrow><mspace width="0.167em"></mspace><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msup><mspace width="0.167em"></mspace><msup><mi>γ</mi><mi>q</mi></msup></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>+</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mspace width="0.167em"></mspace><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub><mi>/</mi><msub><mi>a</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>k</mi><mo>+</mo><mi>q</mi></mrow></msup></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>=</mo><mfrac><mrow><mi>p</mi><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mn>1</mn><mn>2</mn></msubsup></mrow><msub><mi>a</mi><mn>2</mn></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(\bar{z}) = \frac{\Gamma(k + q)}{\Gamma(k)\, \Gamma(q)} \cdot \frac{\left(x\, a_1/a_2\right)^{k} \bar{z}^{\,k-1}\, \gamma^q}{\left(\gamma + \bar{z}\, x\, a_1/a_2\right)^{k+q}}, \qquad k = \frac{p\, a_1^2}{a_2}.
 </annotation></semantics></math></p>
-<p>When all of a customer’s covariate effects are equal,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">k = px</annotation></semantics></math>
-and the expression is the exact density, so the same formula covers
-every case. The approximation reproduces the mean and variance of
+<p>Written out in terms of the raw sums, this is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo>+</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>⋅</mo><mfrac><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></munderover><msup><mi>e</mi><msub><mi>η</mi><mi>j</mi></msub></msup></mrow><mrow><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></munderover><msup><mi>e</mi><mrow><mn>2</mn><msub><mi>η</mi><mi>j</mi></msub></mrow></msup></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mi>k</mi></msup><msup><mover><mi>z</mi><mo accent="true">‾</mo></mover><mrow><mspace width="0.167em"></mspace><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msup><mspace width="0.167em"></mspace><msup><mi>γ</mi><mi>q</mi></msup></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>+</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mspace width="0.167em"></mspace><mstyle displaystyle="true"><mfrac><mrow><mi>x</mi><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></munderover><msup><mi>e</mi><msub><mi>η</mi><mi>j</mi></msub></msup></mrow><mrow><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></munderover><msup><mi>e</mi><mrow><mn>2</mn><msub><mi>η</mi><mi>j</mi></msub></mrow></msup></mrow></mfrac></mstyle><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>k</mi><mo>+</mo><mi>q</mi></mrow></msup></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>k</mi><mo>=</mo><mfrac><mrow><mi>p</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></munderover><msup><mi>e</mi><msub><mi>η</mi><mi>j</mi></msub></msup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><mrow><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>x</mi></munderover><msup><mi>e</mi><mrow><mn>2</mn><msub><mi>η</mi><mi>j</mi></msub></mrow></msup></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+f(\bar{z}) = \frac{\Gamma(k + q)}{\Gamma(k)\, \Gamma(q)} \cdot \frac{\left(\dfrac{x \sum_{j=1}^{x} e^{\eta_j}}{\sum_{j=1}^{x} e^{2\eta_j}}\right)^{k} \bar{z}^{\,k-1}\, \gamma^q}{\left(\gamma + \bar{z}\, \dfrac{x \sum_{j=1}^{x} e^{\eta_j}}{\sum_{j=1}^{x} e^{2\eta_j}}\right)^{k+q}}, \qquad k = \frac{p \left(\sum_{j=1}^{x} e^{\eta_j}\right)^2}{\sum_{j=1}^{x} e^{2\eta_j}}.
+</annotation></semantics></math></p>
+<p>Each customer needs only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>1</mn></msub><annotation encoding="application/x-tex">a_1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>2</mn></msub><annotation encoding="application/x-tex">a_2</annotation></semantics></math>,
+which are three sums over their transactions. The fitted curve in the
+plot is the average of these densities over the customers in the
+data.</p>
+<p><em>One formula for every case.</em> The same expression covers the
+model without covariates, static covariates and time-varying covariates.
+Only the values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>1</mn></msub><annotation encoding="application/x-tex">a_1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>2</mn></msub><annotation encoding="application/x-tex">a_2</annotation></semantics></math>
+change:</p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Case</th>
+<th align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>1</mn></msub><annotation encoding="application/x-tex">a_1</annotation></semantics></math></th>
+<th align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>a</mi><mn>2</mn></msub><annotation encoding="application/x-tex">a_2</annotation></semantics></math></th>
+<th align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math></th>
+<th align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub><mi>/</mi><msub><mi>a</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x\, a_1/a_2</annotation></semantics></math></th>
+<th align="left">Density of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>
-exactly. The fitted curve is the average of these densities over the
-customers in the data.</p>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">No covariates
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>j</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\eta_j = 0</annotation></semantics></math>)</td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">px</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math></td>
+<td align="left">exact</td>
+</tr>
+<tr class="even">
+<td align="left">Static covariates
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mi>j</mi></msub><mo>=</mo><mi>η</mi></mrow><annotation encoding="application/x-tex">\eta_j = \eta</annotation></semantics></math>)</td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mi>η</mi></msup></mrow><annotation encoding="application/x-tex">x\, e^{\eta}</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mn>2</mn><mi>η</mi></mrow></msup></mrow><annotation encoding="application/x-tex">x\, e^{2\eta}</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">px</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><mi>η</mi></mrow></msup></mrow><annotation encoding="application/x-tex">x\, e^{-\eta}</annotation></semantics></math></td>
+<td align="left">exact</td>
+</tr>
+<tr class="odd">
+<td align="left">Time-varying covariates</td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>j</mi></msub><msup><mi>e</mi><msub><mi>η</mi><mi>j</mi></msub></msup></mrow><annotation encoding="application/x-tex">\sum_j e^{\eta_j}</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>j</mi></msub><msup><mi>e</mi><mrow><mn>2</mn><msub><mi>η</mi><mi>j</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">\sum_j e^{2\eta_j}</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mspace width="0.167em"></mspace><msubsup><mi>a</mi><mn>1</mn><mn>2</mn></msubsup><mi>/</mi><msub><mi>a</mi><mn>2</mn></msub><mo>≤</mo><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">p\, a_1^2/a_2 \le px</annotation></semantics></math></td>
+<td align="left"><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>1</mn></msub><mi>/</mi><msub><mi>a</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x\, a_1/a_2</annotation></semantics></math></td>
+<td align="left">approximate</td>
+</tr>
+</tbody>
+</table>
+<p>In the first two rows, all of a customer’s rates are equal, so the
+gamma distribution in step 1 is the exact distribution of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">S \mid \nu_0</annotation></semantics></math>,
+namely
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Gamma</mtext><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>x</mi><mo>,</mo><mspace width="0.222em"></mspace><msub><mi>ν</mi><mn>0</mn></msub><msup><mi>e</mi><mrow><mi>−</mi><mi>η</mi></mrow></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{Gamma}(px,\ \nu_0 e^{-\eta})</annotation></semantics></math>.
+Substituting the table entries into the formula gives</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>x</mi><mo>+</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi mathvariant="normal">Γ</mi><mo stretchy="false" form="prefix">(</mo><mi>q</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mo>⋅</mo><mfrac><mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><mi>η</mi></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>p</mi><mi>x</mi></mrow></msup><msup><mover><mi>z</mi><mo accent="true">‾</mo></mover><mrow><mspace width="0.167em"></mspace><mi>p</mi><mi>x</mi><mo>−</mo><mn>1</mn></mrow></msup><mspace width="0.167em"></mspace><msup><mi>γ</mi><mi>q</mi></msup></mrow><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>γ</mi><mo>+</mo><mi>x</mi><mspace width="0.167em"></mspace><msup><mi>e</mi><mrow><mi>−</mi><mi>η</mi></mrow></msup><mspace width="0.167em"></mspace><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>p</mi><mi>x</mi><mo>+</mo><mi>q</mi></mrow></msup></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+f(\bar{z}) = \frac{\Gamma(px + q)}{\Gamma(px)\, \Gamma(q)} \cdot \frac{\left(x\, e^{-\eta}\right)^{px} \bar{z}^{\,px-1}\, \gamma^q}{\left(\gamma + x\, e^{-\eta}\, \bar{z}\right)^{px+q}},
+</annotation></semantics></math></p>
+<p>which is the exact density of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>.
+With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>η</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\eta = 0</annotation></semantics></math>
+it is Equation (1a) of Fader and Hardie (2013). Only the third row is an
+approximation. By the Cauchy–Schwarz inequality
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>a</mi><mn>1</mn><mn>2</mn></msubsup><mo>≤</mo><mi>x</mi><mspace width="0.167em"></mspace><msub><mi>a</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">a_1^2 \le x\, a_2</annotation></semantics></math>,
+so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>≤</mo><mi>p</mi><mi>x</mi></mrow><annotation encoding="application/x-tex">k \le px</annotation></semantics></math>,
+with equality exactly when all of a customer’s covariate effects are
+equal, which is the case in the first two rows.</p>
+<p><em>How good is the approximation?</em> Because the mean and variance
+of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>∣</mo><msub><mi>ν</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">S \mid \nu_0</annotation></semantics></math>
+are matched for every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ν</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\nu_0</annotation></semantics></math>,
+the mean and variance of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>z</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{z}</annotation></semantics></math>
+are reproduced exactly, whenever they exist. Higher moments are not
+matched, so the density itself is approximate. An exact density exists
+as an infinite series of gamma densities (Moschopoulos 1985), but it is
+much heavier to compute. Since the purpose of this plot is to judge
+visually how well the model fits the data, an approximation that gets
+the mean and variance right is acceptable.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/GGcov_plot_avg_spend.html">GGcov_plot_avg_spend</a></span><span class="op">(</span><span class="va">fit_varying</span>, <span class="va">spend_data_sample</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_to_ggcov_vignette_files/figure-html/avg-spend-varying-1.png" class="r-plt" alt="" width="672"></p>
@@ -771,6 +905,18 @@ Covariates in the Gamma-Gamma Spend Model</em> (Research Note No. 045).
 <li>Fader, P. S., Hardie, B. G. S., &amp; Lee, K. L. (2005). RFM and
 CLV: Using iso-value curves for customer base analysis. <em>Journal of
 Marketing Research</em>, 42(4), 415–430.</li>
+<li>Moschopoulos, P. G. (1985). The distribution of the sum of
+independent gamma random variables. <em>Annals of the Institute of
+Statistical Mathematics</em>, 37, 541–544. <a href="https://doi.org/10.1007/BF02481123" class="external-link uri">https://doi.org/10.1007/BF02481123</a>
+</li>
+<li>Satterthwaite, F. E. (1946). An approximate distribution of
+estimates of variance components. <em>Biometrics Bulletin</em>, 2(6),
+110–114. <a href="https://doi.org/10.2307/3002019" class="external-link uri">https://doi.org/10.2307/3002019</a>
+</li>
+<li>Welch, B. L. (1947). The generalization of “Student’s” problem when
+several different population variances are involved.
+<em>Biometrika</em>, 34(1/2), 28–35. <a href="https://doi.org/10.2307/2332510" class="external-link uri">https://doi.org/10.2307/2332510</a>
+</li>
 </ul>
 <hr>
 </div>
