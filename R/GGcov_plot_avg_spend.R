@@ -19,8 +19,8 @@
 #'   \item If the covariates change across a customer's transactions, the
 #'     total spend is a sum of gamma variables with different rates, which has
 #'     no closed form. The total is then approximated by a gamma distribution
-#'     with the same mean and variance (given \eqn{\nu_0}), which gives the
-#'     expression above. The plot says so when this approximation is used.
+#'     with the same mean and variance (given \eqn{\nu_0}), the
+#'     Satterthwaite-Welch approximation, which gives the expression above. The plot says so when this approximation is used.
 #' }
 #'
 #' @param fit A fitted model of class \code{"GGcov"} from
@@ -38,6 +38,17 @@
 #' @references Fader, P. S., & Hardie, B. G. S. (2013). \emph{The Gamma-Gamma
 #'   Model of Monetary Value} (Research Note No. 025).
 #'   \url{https://brucehardie.com/notes/025/}
+#'   
+#'   Satterthwaite, F. E. (1946). An approximate distribution of estimates of
+#'   variance components. \emph{Biometrics Bulletin}, 2(6), 110-114.
+#'   
+#'   Welch, B. L. (1947). The generalization of "Student's" problem when
+#'   several different population variances are involved. \emph{Biometrika},
+#'   34(1/2), 28-35.
+#'   
+#'   Moschopoulos, P. G. (1985). The distribution of the sum of independent
+#'   gamma random variables. \emph{Annals of the Institute of Statistical
+#'   Mathematics}, 37, 541-544.
 #' @export
 #' @importFrom graphics plot lines legend mtext title
 #' @importFrom stats density quantile model.frame model.matrix na.fail approx
