@@ -1,6 +1,6 @@
 # data-raw/spend_data.R
 #
-# Simulates the example datasets shipped with GGcov: `spend_data` (1000
+# Simulates the example datasets shipped with GammaGammaCov: `spend_data` (1000
 # customers) and `spend_data_sample` (a random subset of 300 customers).
 # Run from the package root:  source("data-raw/spend_data.R")
 

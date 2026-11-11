@@ -1,21 +1,21 @@
-# Introduction to GGcov: Gamma-Gamma Spend Models with Covariates
+# Introduction to GammaGammaCov: Gamma-Gamma Spend Models with Covariates
 
 ## Package Overview
 
-`GGcov` implements maximum likelihood estimation and diagnostic plotting
-of the gamma-gamma model of spend per transaction, with time-varying and
-time-invariant covariates (Fader and Hardie 2024). The gamma-gamma model
-of spend is attributed to Colombo and Jiang (1999), and Fader et
-al. (2005) used it for the monetary-value component of their customer
-lifetime value (CLV) framework.
+`GammaGammaCov` implements maximum likelihood estimation and diagnostic
+plotting of the gamma-gamma model of spend per transaction, with
+time-varying and time-invariant covariates (Fader and Hardie 2024). The
+gamma-gamma model of spend is attributed to Colombo and Jiang (1999),
+and Fader et al. (2005) used it for the monetary-value component of
+their customer lifetime value (CLV) framework.
 
 | Function | Purpose |
 |:---|:---|
-| [`GGcov_MLE()`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md) | Maximum likelihood estimation with covariates (time-varying, static, or none) |
+| [`GGcov_MLE()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md) | Maximum likelihood estimation with covariates (time-varying, static, or none) |
 | [`print()`](https://rdrr.io/r/base/print.html) | S3 print method displaying estimates, SEs, and Wald confidence intervals |
-| [`GGcov_plot_mixing()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_mixing.md) | Plot the gamma mixing distribution of the baseline spending rate $`\nu_0`$ across the customer base |
-| [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_avg_spend.md) | Compare the observed distribution of customers’ average spend per transaction with the distribution implied by the fitted model |
-| [`GGcov_expected_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_expected_spend.md) | Posterior conditional expectation of the monetary value of a future transaction, given the customer’s history and the (known) covariate values of that transaction |
+| [`GGcov_plot_mixing()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_mixing.md) | Plot the gamma mixing distribution of the baseline spending rate $`\nu_0`$ across the customer base |
+| [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_avg_spend.md) | Compare the observed distribution of customers’ average spend per transaction with the distribution implied by the fitted model |
+| [`GGcov_expected_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_expected_spend.md) | Posterior conditional expectation of the monetary value of a future transaction, given the customer’s history and the (known) covariate values of that transaction |
 
 ------------------------------------------------------------------------
 
@@ -78,11 +78,11 @@ contrasts).
 > CRAN limits, we evaluate the models using `spend_data_sample`, a small
 > subset of the package’s full simulated data intended for quick trials
 > and interactive exploration. For full empirical analyses, use the
-> entire cohort via `spend_data <- GGcov::spend_data`. The syntax
-> remains identical.
+> entire cohort via `spend_data <- GammaGammaCov::spend_data`. The
+> syntax remains identical.
 
 The data are simulated (see
-[`?spend_data`](https://kaloklee.github.io/GGcov/reference/spend_data.md))
+[`?spend_data`](https://kaloklee.github.io/GammaGammaCov/reference/spend_data.md))
 to mimic the structure of retail transaction logs with covariates, such
 as the apparel example in the CLVTools vignette (Bachmann et al. 2025).
 Each row represents one transaction. We print the first rows to
@@ -90,10 +90,10 @@ illustrate the structure.
 
 ``` r
 
-library(GGcov)
+library(GammaGammaCov)
 
 # Load the quick-start sample dataset
-spend_data_sample <- GGcov::spend_data_sample
+spend_data_sample <- GammaGammaCov::spend_data_sample
 
 # Inspect the transaction data structure
 head(spend_data_sample, 10)
@@ -173,7 +173,7 @@ GGcov_plot_mixing(fit_varying)
 > highly correlated, because many $`(q, \gamma)`$ combinations imply
 > very similar distributions of $`\nu_0`$. Interpret them jointly, for
 > example through the mixing distribution shown by
-> [`GGcov_plot_mixing()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_mixing.md),
+> [`GGcov_plot_mixing()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_mixing.md),
 > rather than one at a time.
 
 ### Checking the Fit: Observed versus Fitted Average Spend
@@ -182,7 +182,7 @@ A natural check of the fitted model compares the observed distribution
 of each customer’s average spend per transaction,
 $`\bar{z} = \frac{1}{x}\sum_{j=1}^{x} z_j`$, with the distribution the
 model implies (Fader and Hardie 2013, Figure 3).
-[`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_plot_avg_spend.md)
+[`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_avg_spend.md)
 draws both.
 
 **The model density of $`\bar{z}`$.** For a customer with $`x`$
@@ -337,7 +337,7 @@ coefficient for a level it has not seen.
 
 A natural next question is how much a customer will spend on their
 *next* transaction.
-[`GGcov_expected_spend()`](https://kaloklee.github.io/GGcov/reference/GGcov_expected_spend.md)
+[`GGcov_expected_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_expected_spend.md)
 computes the **conditional expectation of the monetary value of a future
 transaction $`Z_k`$, given the customer’s observed history
 $`(z_1, \dots, z_x)`$ with covariates
@@ -679,7 +679,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] GGcov_0.0.0.9000
+#> [1] GammaGammaCov_0.0.0.9000
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    

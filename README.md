@@ -1,22 +1,22 @@
-# GGcov
+# GammaGammaCov
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-**GGcov** implements the gamma-gamma model of spend per transaction with both time-varying and time-invariant covariates, following the methodology of Fader and Hardie (2024).
+**GammaGammaCov** implements the gamma-gamma model of spend per transaction with both time-varying and time-invariant covariates, following the methodology of Fader and Hardie (2024).
 
 ## Installation
 
 Install the released version from CRAN:
 
 ```r
-install.packages("GGcov")
+install.packages("GammaGammaCov")
 ```
 
 Or install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("kaloklee/GGcov")
+remotes::install_github("kaloklee/GammaGammaCov")
 ```
 
 ------------------------------------------------------------------------
@@ -30,10 +30,10 @@ Data are in **transaction (long) format**: one row per transaction, with the cus
 Here we demonstrate estimation using `spend_data_sample`, a small simulated dataset included for rapid experimentation and testing:
 
 ```r
-library(GGcov)
+library(GammaGammaCov)
 
 # Load the quick-start sample dataset
-spend_data_sample <- GGcov::spend_data_sample
+spend_data_sample <- GammaGammaCov::spend_data_sample
 
 # Estimate the spend model with dynamic covariates
 fit <- GGcov_MLE(
@@ -66,11 +66,11 @@ GGcov_expected_spend(fit, newdata = future, history = spend_data_sample)
 
 ## Vignettes
 
-For a more comprehensive demonstration of the package's functionality, browse the [introductory vignette](https://kaloklee.github.io/GGcov/articles/introduction_to_ggcov_vignette.html) online, or build it locally:
+For a more comprehensive demonstration of the package's functionality, browse the [introductory vignette](https://kaloklee.github.io/GammaGammaCov/articles/introduction_to_ggcov_vignette.html) online, or build it locally:
 
 ```r
-remotes::install_github("kaloklee/GGcov", build_vignettes = TRUE)
-vignette("introduction_to_ggcov_vignette", package = "GGcov")
+remotes::install_github("kaloklee/GammaGammaCov", build_vignettes = TRUE)
+vignette("introduction_to_ggcov_vignette", package = "GammaGammaCov")
 ```
 
 ------------------------------------------------------------------------

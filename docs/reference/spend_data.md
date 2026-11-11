@@ -2,7 +2,7 @@
 
 Simulated transaction-level data with covariates, generated from the
 gamma-gamma model fitted by
-[`GGcov_MLE`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md).
+[`GGcov_MLE`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md).
 The data mimic the structure of retail transaction logs with covariates,
 such as the apparel example in the CLVTools vignette (Bachmann et al.,
 2025). `spend_data` holds 1000 customers; `spend_data_sample` is a

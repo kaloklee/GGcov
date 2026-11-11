@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Gamma-Gamma Spend Models with Covariates • GGcov</title>
+<title>Gamma-Gamma Spend Models with Covariates • GammaGammaCov</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">GGcov</a>
+    <a class="navbar-brand me-2" href="index.html">GammaGammaCov</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
 
@@ -35,7 +35,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/introduction_to_ggcov_vignette.html">Introduction to GGcov: Gamma-Gamma Spend Models with Covariates</a></li>
+<li><a class="dropdown-item" href="articles/introduction_to_ggcov_vignette.html">Introduction to GammaGammaCov: Gamma-Gamma Spend Models with Covariates</a></li>
   </ul>
 </li>
       </ul>
@@ -43,7 +43,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/kaloklee/GGcov/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/kaloklee/GammaGammaCov/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -52,20 +52,20 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="ggcov">GGcov<a class="anchor" aria-label="anchor" href="#ggcov"></a>
+<div class="page-header"><h1 id="gammagammacov">GammaGammaCov<a class="anchor" aria-label="anchor" href="#gammagammacov"></a>
 </h1></div>
 <p><a href="https://www.apache.org/licenses/LICENSE-2.0" class="external-link"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a></p>
-<p><strong>GGcov</strong> implements the gamma-gamma model of spend per transaction with both time-varying and time-invariant covariates, following the methodology of Fader and Hardie (2024).</p>
+<p><strong>GammaGammaCov</strong> implements the gamma-gamma model of spend per transaction with both time-varying and time-invariant covariates, following the methodology of Fader and Hardie (2024).</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Install the released version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GGcov"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"GammaGammaCov"</span><span class="op">)</span></span></code></pre></div>
 <p>Or install the development version from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kaloklee/GGcov"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kaloklee/GammaGammaCov"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -77,10 +77,10 @@
 <p>Data are in <strong>transaction (long) format</strong>: one row per transaction, with the customer identifier, the amount spent, and the covariate values in effect at the time of that transaction.</p>
 <p>Here we demonstrate estimation using <code>spend_data_sample</code>, a small simulated dataset included for rapid experimentation and testing:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kaloklee.github.io/GGcov/">GGcov</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kaloklee.github.io/GammaGammaCov/">GammaGammaCov</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load the quick-start sample dataset</span></span>
-<span><span class="va">spend_data_sample</span> <span class="op">&lt;-</span> <span class="fu">GGcov</span><span class="fu">::</span><span class="va"><a href="reference/spend_data.html">spend_data_sample</a></span></span>
+<span><span class="va">spend_data_sample</span> <span class="op">&lt;-</span> <span class="fu">GammaGammaCov</span><span class="fu">::</span><span class="va"><a href="reference/spend_data.html">spend_data_sample</a></span></span>
 <span></span>
 <span><span class="co"># Estimate the spend model with dynamic covariates</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/GGcov_MLE.html">GGcov_MLE</a></span><span class="op">(</span></span>
@@ -112,10 +112,10 @@
 <div class="section level2">
 <h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
 </h2>
-<p>For a more comprehensive demonstration of the package’s functionality, browse the <a href="https://kaloklee.github.io/GGcov/articles/introduction_to_ggcov_vignette.html">introductory vignette</a> online, or build it locally:</p>
+<p>For a more comprehensive demonstration of the package’s functionality, browse the <a href="https://kaloklee.github.io/GammaGammaCov/articles/introduction_to_ggcov_vignette.html">introductory vignette</a> online, or build it locally:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kaloklee/GGcov"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"introduction_to_ggcov_vignette"</span>, package <span class="op">=</span> <span class="st">"GGcov"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kaloklee/GammaGammaCov"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"introduction_to_ggcov_vignette"</span>, package <span class="op">=</span> <span class="st">"GammaGammaCov"</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -137,8 +137,8 @@ Questions, issues, or contributions: Ka Lok Lee (<a href="mailto:kaloklee@gmail.
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/kaloklee/GGcov/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/kaloklee/GGcov/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/kaloklee/GammaGammaCov/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/kaloklee/GammaGammaCov/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -153,7 +153,7 @@ Questions, issues, or contributions: Ka Lok Lee (<a href="mailto:kaloklee@gmail.
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing GGcov</a></li>
+<li><a href="authors.html#citation">Citing GammaGammaCov</a></li>
 </ul>
 </div>
 

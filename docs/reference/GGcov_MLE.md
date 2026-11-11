@@ -94,5 +94,5 @@ covariate scale (only `hessian` is on the internal parameterization):
 - spend_name, subject_name:
 
   Names of the outcome and subject columns used in the fit, so
-  [`GGcov_expected_spend`](https://kaloklee.github.io/GGcov/reference/GGcov_expected_spend.md)
+  [`GGcov_expected_spend`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_expected_spend.md)
   can find them in new data.

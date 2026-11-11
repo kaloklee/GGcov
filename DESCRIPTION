@@ -1,4 +1,4 @@
-Package: GGcov
+Package: GammaGammaCov
 Type: Package
 Title: Gamma-Gamma Spend Models with Covariates
 Version: 0.0.0.9000
@@ -13,6 +13,6 @@ VignetteBuilder: knitr
 Depends: 
     R (>= 3.5)
 Config/roxygen2/version: 8.1.1
-URL:    URL: https://kaloklee.github.io/GGcov/, https://github.com/kaloklee/GGcov
-BugReports: https://github.com/kaloklee/GGcov/issues
+URL: https://kaloklee.github.io/GammaGammaCov/, https://github.com/kaloklee/GammaGammaCov
+BugReports: https://github.com/kaloklee/GammaGammaCov/issues
 

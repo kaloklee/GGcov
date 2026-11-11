@@ -23,7 +23,7 @@ GGcov_plot_avg_spend(
 - fit:
 
   A fitted model of class `"GGcov"` from
-  [`GGcov_MLE`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md).
+  [`GGcov_MLE`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md).
 
 - data:
 

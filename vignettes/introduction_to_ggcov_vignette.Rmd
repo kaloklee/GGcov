@@ -1,10 +1,10 @@
 ---
-title: "Introduction to GGcov: Gamma-Gamma Spend Models with Covariates"
+title: "Introduction to GammaGammaCov: Gamma-Gamma Spend Models with Covariates"
 author: "Ka Lok Lee"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to GGcov: Gamma-Gamma Spend Models with Covariates}
+  %\VignetteIndexEntry{Introduction to GammaGammaCov: Gamma-Gamma Spend Models with Covariates}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 ## Package Overview
 
-`GGcov` implements maximum likelihood estimation and diagnostic plotting of the gamma-gamma model of spend per transaction, with time-varying and time-invariant covariates (Fader and Hardie 2024). The gamma-gamma model of spend is attributed to Colombo and Jiang (1999), and Fader et al. (2005) used it for the monetary-value component of their customer lifetime value (CLV) framework.
+`GammaGammaCov` implements maximum likelihood estimation and diagnostic plotting of the gamma-gamma model of spend per transaction, with time-varying and time-invariant covariates (Fader and Hardie 2024). The gamma-gamma model of spend is attributed to Colombo and Jiang (1999), and Fader et al. (2005) used it for the monetary-value component of their customer lifetime value (CLV) framework.
 
 | Function | Purpose |
 |:---|:---|
@@ -71,15 +71,15 @@ Row order does not matter, and no time index is needed. A static covariate is in
 
 ## Example 1: Time-Varying Covariates (`spend_data_sample`)
 
-> **Note on Datasets:** To ensure this vignette builds rapidly within CRAN limits, we evaluate the models using `spend_data_sample`, a small subset of the package's full simulated data intended for quick trials and interactive exploration. For full empirical analyses, use the entire cohort via `spend_data <- GGcov::spend_data`. The syntax remains identical.
+> **Note on Datasets:** To ensure this vignette builds rapidly within CRAN limits, we evaluate the models using `spend_data_sample`, a small subset of the package's full simulated data intended for quick trials and interactive exploration. For full empirical analyses, use the entire cohort via `spend_data <- GammaGammaCov::spend_data`. The syntax remains identical.
 
 The data are simulated (see `?spend_data`) to mimic the structure of retail transaction logs with covariates, such as the apparel example in the CLVTools vignette (Bachmann et al. 2025). Each row represents one transaction. We print the first rows to illustrate the structure.
 
 ```{r load-varying}
-library(GGcov)
+library(GammaGammaCov)
 
 # Load the quick-start sample dataset
-spend_data_sample <- GGcov::spend_data_sample
+spend_data_sample <- GammaGammaCov::spend_data_sample
 
 # Inspect the transaction data structure
 head(spend_data_sample, 10)

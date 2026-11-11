@@ -17,7 +17,7 @@ GGcov_expected_spend(fit, newdata, history = NULL)
 - fit:
 
   A fitted model of class `"GGcov"` from
-  [`GGcov_MLE`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md).
+  [`GGcov_MLE`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md).
 
 - newdata:
 
@@ -29,7 +29,7 @@ GGcov_expected_spend(fit, newdata, history = NULL)
 
   Optional data frame of observed transactions, with the subject column,
   the spend column and the covariates, laid out like the data used for
-  [`GGcov_MLE`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md).
+  [`GGcov_MLE`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md).
   If `NULL`, every customer is treated as having no past transactions.
 
 ## Value

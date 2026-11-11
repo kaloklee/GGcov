@@ -14,7 +14,7 @@ print(x, digits = 4, ...)
 - x:
 
   A fitted model of class `"GGcov"` from
-  [`GGcov_MLE`](https://kaloklee.github.io/GGcov/reference/GGcov_MLE.md).
+  [`GGcov_MLE`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md).
 
 - digits:
 
