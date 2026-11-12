@@ -84,5 +84,5 @@ vignette("introduction_to_ggcov_vignette", package = "GammaGammaCov")
 
 ## License & Contact
 
-Licensed under the [Apache License 2.0](LICENSE).  
+Licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).  
 Questions, issues, or contributions: Ka Lok Lee ([kaloklee@gmail.com](mailto:kaloklee@gmail.com)).
