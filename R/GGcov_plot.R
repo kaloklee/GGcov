@@ -17,6 +17,13 @@
 #' @param ... Further arguments passed to \code{\link[graphics]{curve}}.
 #' @return Invisibly returns a list with the \code{mean} (q / gamma) and
 #'   \code{median} of the mixing distribution.
+#' @examples
+#' fit <- GGcov_MLE(
+#'   Price ~ discount + gender + channel,
+#'   data    = spend_data_sample,
+#'   subject = "Id"
+#' )
+#' GGcov_plot_mixing(fit)
 #' @export
 #' @importFrom stats dgamma qgamma
 #' @importFrom graphics curve abline mtext

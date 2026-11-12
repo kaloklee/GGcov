@@ -48,6 +48,18 @@
 #'     used in the fit, so \code{\link{GGcov_expected_spend}} can find them in
 #'     new data.}
 #'
+#' @examples
+#' fit <- GGcov_MLE(
+#'   Price ~ discount + gender + channel,
+#'   data    = spend_data_sample,
+#'   subject = "Id"
+#' )
+#' print(fit)
+#'
+#' # Null model without covariates
+#' fit_null <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
+#' print(fit_null)
+#'
 #' @export
 #' @importFrom stats optim as.formula model.matrix model.frame terms qnorm
 #' @importFrom stats .getXlevels
@@ -128,9 +140,10 @@ GGcov_MLE <- function(fo, data, subject, level = 0.95) {
     Xs  <- scale(X[, -1, drop = FALSE])
     ctr <- attr(Xs, "scaled:center")
     scl <- attr(Xs, "scaled:scale")
-    if (any(scl == 0))
+    no_var <- is.na(scl) | scl <= sqrt(.Machine$double.eps) * pmax(1, abs(ctr))
+    if (any(no_var))
       stop("Covariate(s) with no variation: ",
-           paste(names(scl)[scl == 0], collapse = ", "),
+           paste(names(scl)[no_var], collapse = ", "),
            ". Remove them before fitting.", call. = FALSE)
   }
 

@@ -9,12 +9,12 @@ gamma-gamma model of spend is attributed to Colombo and Jiang (1999),
 and Fader et al. (2005) used it for the monetary-value component of
 their customer lifetime value (CLV) framework.
 
-| Function | Purpose |
-|:---|:---|
-| [`GGcov_MLE()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md) | Maximum likelihood estimation with covariates (time-varying, static, or none) |
-| [`print()`](https://rdrr.io/r/base/print.html) | S3 print method displaying estimates, SEs, and Wald confidence intervals |
-| [`GGcov_plot_mixing()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_mixing.md) | Plot the gamma mixing distribution of the baseline spending rate $`\nu_0`$ across the customer base |
-| [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_avg_spend.md) | Compare the observed distribution of customers’ average spend per transaction with the distribution implied by the fitted model |
+| Function                                                                                               | Purpose                                                                                                                                                            |
+|:-------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [`GGcov_MLE()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_MLE.md)                       | Maximum likelihood estimation with covariates (time-varying, static, or none)                                                                                      |
+| [`print()`](https://rdrr.io/r/base/print.html)                                                         | S3 print method displaying estimates, SEs, and Wald confidence intervals                                                                                           |
+| [`GGcov_plot_mixing()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_mixing.md)       | Plot the gamma mixing distribution of the baseline spending rate $\nu_{0}$ across the customer base                                                                |
+| [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_avg_spend.md) | Compare the observed distribution of customers’ average spend per transaction with the distribution implied by the fitted model                                    |
 | [`GGcov_expected_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_expected_spend.md) | Posterior conditional expectation of the monetary value of a future transaction, given the customer’s history and the (known) covariate values of that transaction |
 
 ------------------------------------------------------------------------
@@ -27,27 +27,22 @@ average transaction monetary value varies across customers but not over
 time for a given customer; and the distribution of the averages is
 independent of the transaction process (Fader and Hardie 2013).
 
-Formally, for a customer with $`x`$ transactions, let
-$`z_1, \dots, z_x`$ denote the monetary value of each transaction. Given
-the customer’s baseline rate $`\nu_0`$, the values are independent and
-gamma distributed with shape $`p`$ and rate $`\nu_j`$, where the
-covariates $`\mathbf{w}_j`$ in effect at transaction $`j`$ shift the
-rate $`\nu_0`$:
+Formally, for a customer with $x$ transactions, let $z_{1},\ldots,z_{x}$
+denote the monetary value of each transaction. Given the customer’s
+baseline rate $\nu_{0}$, the values are independent and gamma
+distributed with shape $p$ and rate $\nu_{j}$, where the covariates
+$\mathbf{w}_{j}$ in effect at transaction $j$ shift the rate $\nu_{0}$:
 
-``` math
-z_j \mid \nu_0 \sim \text{Gamma}\left(p,\ \nu_j\right), \qquad \nu_j = \nu_0 e^{-\mathbf{w}_j\beta'},
-```
+$$z_{j} \mid \nu_{0} \sim \text{Gamma}\left( p,\ \nu_{j} \right),\qquad\nu_{j} = \nu_{0}e^{-\mathbf{w}_{j}\beta\prime},$$
 
-so the mean of $`z_j`$ is $`p\, e^{\mathbf{w}_j\beta'} / \nu_0`$. Across
-customers, $`\nu_0 \sim \text{Gamma}(q, \gamma)`$ with shape $`q`$ and
-rate $`\gamma`$ captures unobserved heterogeneity.
+so the mean of $z_{j}$ is $p\, e^{\mathbf{w}_{j}\beta\prime}/\nu_{0}$.
+Across customers, $\nu_{0} \sim \text{Gamma}(q,\gamma)$ with shape $q$
+and rate $\gamma$ captures unobserved heterogeneity.
 
-``` math
-L(p, q, \gamma, \beta) = \frac{\left\{\prod_{j=1}^{x} z_j\right\}^{p-1} A(x)}{\Gamma(p)^x} \cdot \frac{\Gamma(px + q)}{\Gamma(q)} \cdot \frac{\gamma^q}{\left(\gamma + B(x)\right)^{px+q}},
-```
+$$L(p,q,\gamma,\beta) = \frac{\left\{ \prod\limits_{j = 1}^{x}z_{j} \right\}^{p - 1}A(x)}{\Gamma(p)^{x}} \cdot \frac{\Gamma(px + q)}{\Gamma(q)} \cdot \frac{\gamma^{q}}{\left( \gamma + B(x) \right)^{px + q}},$$
 
-where $`A(x) = e^{-p\sum_{j=1}^{x} \mathbf{w}_j\beta'}`$ and
-$`B(x) = \sum_{j=1}^{x} z_j e^{-\mathbf{w}_j\beta'}`$. The full
+where $A(x) = e^{-p\sum_{j = 1}^{x}\mathbf{w}_{j}\beta\prime}$ and
+$B(x) = \sum_{j = 1}^{x}z_{j}e^{-\mathbf{w}_{j}\beta\prime}$. The full
 likelihood is the product over customers.
 
 ### Required Format for the Data
@@ -60,10 +55,10 @@ Data must be in **transaction (long) format**:
   transactions first).
 - The covariates in effect at the time of each transaction.
 
-| Column | Type | Description |
-|:---|:---|:---|
-| `Id` | Identifier | Unique customer identifier (numeric, character, or factor) |
-| `Price` | Numeric | Amount spent in the transaction (strictly positive) |
+| Column                      | Type             | Description                                                       |
+|:----------------------------|:-----------------|:------------------------------------------------------------------|
+| `Id`                        | Identifier       | Unique customer identifier (numeric, character, or factor)        |
+| `Price`                     | Numeric          | Amount spent in the transaction (strictly positive)               |
 | `discount, gender, channel` | Numeric / Factor | Dynamic or static covariates (continuous, binary, or multi-level) |
 
 Row order does not matter, and no time index is needed. A static
@@ -89,7 +84,6 @@ Each row represents one transaction. We print the first rows to
 illustrate the structure.
 
 ``` r
-
 library(GammaGammaCov)
 
 # Load the quick-start sample dataset
@@ -114,7 +108,6 @@ We estimate the model by directly supplying the formula and the subject
 identifier.
 
 ``` r
-
 fit_varying <- GGcov_MLE(
   Price ~ discount + gender + channel,
   data    = spend_data_sample,
@@ -140,39 +133,38 @@ print(fit_varying)
 
 ### Interpreting the Coefficients
 
-Each coefficient $`\beta_k`$ acts multiplicatively on spend: a one-unit
+Each coefficient $\beta_{k}$ acts multiplicatively on spend: a one-unit
 increase in a numeric covariate, or a switch from the reference level to
 a given factor level, multiplies mean spend per transaction by
-$`e^{\beta_k}`$. A positive $`\beta_k`$ raises spend; a negative
-$`\beta_k`$ lowers it. Each non-reference level of a factor gets its own
+$e^{\beta_{k}}$. A positive $\beta_{k}$ raises spend; a negative
+$\beta_{k}$ lowers it. Each non-reference level of a factor gets its own
 coefficient, labeled with the variable name and the level (for example
 `channelweb`).
 
-The mixing distribution of $`\nu_0`$ describes customers at zero for
+The mixing distribution of $\nu_{0}$ describes customers at zero for
 numeric covariates and at the reference level of each factor.
 Coefficients are expressed per unit of each covariate, so raw
 coefficients are not comparable across covariates measured on different
-scales. To make an effect concrete, compute $`e^{\beta_k \Delta}`$ for a
-meaningful change $`\Delta`$. An effect is distinguishable from zero
-when the confidence interval for $`\beta_k`$ excludes $`0`$.
+scales. To make an effect concrete, compute $e^{\beta_{k}\Delta}$ for a
+meaningful change $\Delta$. An effect is distinguishable from zero when
+the confidence interval for $\beta_{k}$ excludes $0$.
 
 ### Visualizing the Mixing Distribution
 
 We can visualize the implied distribution of the baseline spending rate
-$`\nu_0`$ across customers, a gamma distribution with shape $`q`$ and
-rate $`\gamma`$:
+$\nu_{0}$ across customers, a gamma distribution with shape $q$ and rate
+$\gamma$:
 
 ``` r
-
 GGcov_plot_mixing(fit_varying)
 ```
 
 ![](introduction_to_ggcov_vignette_files/figure-html/plot-mixing-1.png)
 
-> **A note on $`q`$ and $`\gamma`$:** The two parameters are often
-> highly correlated, because many $`(q, \gamma)`$ combinations imply
-> very similar distributions of $`\nu_0`$. Interpret them jointly, for
-> example through the mixing distribution shown by
+> **A note on $q$ and $\gamma$:** The two parameters are often highly
+> correlated, because many $(q,\gamma)$ combinations imply very similar
+> distributions of $\nu_{0}$. Interpret them jointly, for example
+> through the mixing distribution shown by
 > [`GGcov_plot_mixing()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_mixing.md),
 > rather than one at a time.
 
@@ -180,116 +172,102 @@ GGcov_plot_mixing(fit_varying)
 
 A natural check of the fitted model compares the observed distribution
 of each customer’s average spend per transaction,
-$`\bar{z} = \frac{1}{x}\sum_{j=1}^{x} z_j`$, with the distribution the
+$\bar{z} = \frac{1}{x}\sum_{j = 1}^{x}z_{j}$, with the distribution the
 model implies (Fader and Hardie 2013, Figure 3).
 [`GGcov_plot_avg_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_plot_avg_spend.md)
 draws both.
 
-**The model density of $`\bar{z}`$.** For a customer with $`x`$
-transactions, let $`S = \sum_{j=1}^{x} z_j`$ be the total spend, so that
-$`\bar{z} = S/x`$, and write $`\eta_j = \mathbf{w}_j\beta'`$. The model
-says that, given the customer’s $`\nu_0`$, the transactions are
-independent with
-$`z_j \mid \nu_0 \sim \text{Gamma}(p,\ \nu_0 e^{-\eta_j})`$. We need the
-distribution of $`\bar{z}`$ after averaging over
-$`\nu_0 \sim \text{Gamma}(q, \gamma)`$.
+**The model density of $\bar{z}$.** For a customer with $x$
+transactions, let $S = \sum_{j = 1}^{x}z_{j}$ be the total spend, so
+that $\bar{z} = S/x$, and write $\eta_{j} = \mathbf{w}_{j}\beta\prime$.
+The model says that, given the customer’s $\nu_{0}$, the transactions
+are independent with
+$z_{j} \mid \nu_{0} \sim \text{Gamma}\left( p,\ \nu_{0}e^{-\eta_{j}} \right)$.
+We need the distribution of $\bar{z}$ after averaging over
+$\nu_{0} \sim \text{Gamma}(q,\gamma)$.
 
-With time-varying covariates, the rates $`\nu_0 e^{-\eta_j}`$ differ
+With time-varying covariates, the rates $\nu_{0}e^{-\eta_{j}}$ differ
 across a customer’s transactions, and a sum of gamma variables with
 different rates has no simple closed form. We tackle this problem with
 the Satterthwaite–Welch approximation (Satterthwaite 1946; Welch 1947),
 which was developed for weighted sums of chi-square variables, such as
-combinations of variance estimates. A chi-square variable with $`d`$
-degrees of freedom is a gamma variable with shape $`d/2`$ and rate
-$`1/2`$, so the same moment matching applies to gamma variables with any
-positive shape $`p`$. The derivation follows the stages of Fader and
-Hardie (2013): the distribution of the total spend given $`\nu_0`$, the
-distribution of the average given $`\nu_0`$, and then the integration
-over $`\nu_0`$.
+combinations of variance estimates. A chi-square variable with $d$
+degrees of freedom is a gamma variable with shape $d/2$ and rate $1/2$,
+so the same moment matching applies to gamma variables with any positive
+shape $p$. The derivation follows the stages of Fader and Hardie (2013):
+the distribution of the total spend given $\nu_{0}$, the distribution of
+the average given $\nu_{0}$, and then the integration over $\nu_{0}$.
 
-1.  *The total spend given $`\nu_0`$.* Given $`\nu_0`$, transaction
-    $`j`$ has mean $`p\, e^{\eta_j}/\nu_0`$ and variance
-    $`p\, e^{2\eta_j}/\nu_0^2`$. The transactions are independent, so
-    their means and variances add. With
-    $`a_1 = \sum_{j=1}^{x} e^{\eta_j}`$ and
-    $`a_2 = \sum_{j=1}^{x} e^{2\eta_j}`$,
+1.  *The total spend given $\nu_{0}$.* Given $\nu_{0}$, transaction $j$
+    has mean $p\, e^{\eta_{j}}/\nu_{0}$ and variance
+    $p\, e^{2\eta_{j}}/\nu_{0}^{2}$. The transactions are independent,
+    so their means and variances add. With
+    $a_{1} = \sum_{j = 1}^{x}e^{\eta_{j}}$ and
+    $a_{2} = \sum_{j = 1}^{x}e^{2\eta_{j}}$,
 
-``` math
-E(S \mid \nu_0) = \frac{p\, a_1}{\nu_0}, \qquad \text{Var}(S \mid \nu_0) = \frac{p\, a_2}{\nu_0^2}.
-```
+$$E\left( S \mid \nu_{0} \right) = \frac{p\, a_{1}}{\nu_{0}},\qquad\text{Var}\left( S \mid \nu_{0} \right) = \frac{p\, a_{2}}{\nu_{0}^{2}}.$$
 
-A $`\text{Gamma}(k, r)`$ distribution has mean $`k/r`$ and variance
-$`k/r^2`$. Setting the two pairs equal and solving gives the
+A $\text{Gamma}(k,r)$ distribution has mean $k/r$ and variance
+$k/r^{2}$. Setting the two pairs equal and solving gives the
 approximation
 
-``` math
-S \mid \nu_0 \;\approx\; \text{Gamma}(k, r), \qquad k = \frac{p\, a_1^2}{a_2}, \quad r = \nu_0\, \frac{a_1}{a_2}.
-```
+$$S \mid \nu_{0}\; \approx \;\text{Gamma}(k,r),\qquad k = \frac{p\, a_{1}^{2}}{a_{2}},\quad r = \nu_{0}\,\frac{a_{1}}{a_{2}}.$$
 
-2.  *The average spend given $`\nu_0`$.* Dividing a gamma variable by
-    $`x`$ multiplies its rate by $`x`$, so the average $`\bar{z} = S/x`$
+2.  *The average spend given $\nu_{0}$.* Dividing a gamma variable by
+    $x$ multiplies its rate by $x$, so the average $\bar{z} = S/x$
     satisfies
 
-``` math
-\bar{z} \mid \nu_0 \;\approx\; \text{Gamma}\left(k,\ \nu_0\, \frac{x\, a_1}{a_2}\right).
-```
+$$\bar{z} \mid \nu_{0}\; \approx \;\text{Gamma}\left( k,\ \nu_{0}\,\frac{x\, a_{1}}{a_{2}} \right).$$
 
-3.  *Integrating out $`\nu_0`$.* Averaging this density over
-    $`\nu_0 \sim \text{Gamma}(q, \gamma)`$ works exactly as in Fader and
-    Hardie (2013), with $`px`$ replaced by $`k`$ and $`x`$ replaced by
-    $`x\, a_1/a_2`$. The density of the average spend of a customer with
-    $`x`$ transactions is
+3.  *Integrating out $\nu_{0}$.* Averaging this density over
+    $\nu_{0} \sim \text{Gamma}(q,\gamma)$ works exactly as in Fader and
+    Hardie (2013), with $px$ replaced by $k$ and $x$ replaced by
+    $x\, a_{1}/a_{2}$. The density of the average spend of a customer
+    with $x$ transactions is
 
-``` math
-f(\bar{z}) = \frac{\Gamma(k + q)}{\Gamma(k)\, \Gamma(q)} \cdot \frac{\left(x\, a_1/a_2\right)^{k} \bar{z}^{\,k-1}\, \gamma^q}{\left(\gamma + \bar{z}\, x\, a_1/a_2\right)^{k+q}}, \qquad k = \frac{p\, a_1^2}{a_2}.
-```
+$$f\left( \bar{z} \right) = \frac{\Gamma(k + q)}{\Gamma(k)\,\Gamma(q)} \cdot \frac{\left( x\, a_{1}/a_{2} \right)^{k}{\bar{z}}^{\, k - 1}\,\gamma^{q}}{\left( \gamma + \bar{z}\, x\, a_{1}/a_{2} \right)^{k + q}},\qquad k = \frac{p\, a_{1}^{2}}{a_{2}}.$$
 
 Written out in terms of the raw sums, this is
 
-``` math
-f(\bar{z}) = \frac{\Gamma(k + q)}{\Gamma(k)\, \Gamma(q)} \cdot \frac{\left(\dfrac{x \sum_{j=1}^{x} e^{\eta_j}}{\sum_{j=1}^{x} e^{2\eta_j}}\right)^{k} \bar{z}^{\,k-1}\, \gamma^q}{\left(\gamma + \bar{z}\, \dfrac{x \sum_{j=1}^{x} e^{\eta_j}}{\sum_{j=1}^{x} e^{2\eta_j}}\right)^{k+q}}, \qquad k = \frac{p \left(\sum_{j=1}^{x} e^{\eta_j}\right)^2}{\sum_{j=1}^{x} e^{2\eta_j}}.
-```
+$$f\left( \bar{z} \right) = \frac{\Gamma(k + q)}{\Gamma(k)\,\Gamma(q)} \cdot \frac{\left( \frac{x\sum\limits_{j = 1}^{x}e^{\eta_{j}}}{\sum\limits_{j = 1}^{x}e^{2\eta_{j}}} \right)^{k}{\bar{z}}^{\, k - 1}\,\gamma^{q}}{\left( \gamma + \bar{z}\,\frac{x\sum\limits_{j = 1}^{x}e^{\eta_{j}}}{\sum\limits_{j = 1}^{x}e^{2\eta_{j}}} \right)^{k + q}},\qquad k = \frac{p\left( \sum\limits_{j = 1}^{x}e^{\eta_{j}} \right)^{2}}{\sum\limits_{j = 1}^{x}e^{2\eta_{j}}}.$$
 
-Each customer needs only $`x`$, $`a_1`$ and $`a_2`$, which are three
-sums over their transactions. The fitted curve in the plot is the
-average of these densities over the customers in the data.
+Each customer needs only $x$, $a_{1}$ and $a_{2}$, which are three sums
+over their transactions. The fitted curve in the plot is the average of
+these densities over the customers in the data.
 
 *One formula for every case.* The same expression covers the model
 without covariates, static covariates and time-varying covariates. Only
-the values of $`a_1`$ and $`a_2`$ change:
+the values of $a_{1}$ and $a_{2}$ change:
 
-| Case | $`a_1`$ | $`a_2`$ | $`k`$ | $`x\, a_1/a_2`$ | Density of $`\bar{z}`$ |
-|:---|:---|:---|:---|:---|:---|
-| No covariates ($`\eta_j = 0`$) | $`x`$ | $`x`$ | $`px`$ | $`x`$ | exact |
-| Static covariates ($`\eta_j = \eta`$) | $`x\, e^{\eta}`$ | $`x\, e^{2\eta}`$ | $`px`$ | $`x\, e^{-\eta}`$ | exact |
-| Time-varying covariates | $`\sum_j e^{\eta_j}`$ | $`\sum_j e^{2\eta_j}`$ | $`p\, a_1^2/a_2 \le px`$ | $`x\, a_1/a_2`$ | approximate |
+| Case                                  | $a_{1}$                | $a_{2}$                 | $k$                           | $x\, a_{1}/a_{2}$ | Density of $\bar{z}$ |
+|:--------------------------------------|:-----------------------|:------------------------|:------------------------------|:------------------|:---------------------|
+| No covariates ($\eta_{j} = 0$)        | $x$                    | $x$                     | $px$                          | $x$               | exact                |
+| Static covariates ($\eta_{j} = \eta$) | $x\, e^{\eta}$         | $x\, e^{2\eta}$         | $px$                          | $x\, e^{-\eta}$   | exact                |
+| Time-varying covariates               | $\sum_{j}e^{\eta_{j}}$ | $\sum_{j}e^{2\eta_{j}}$ | $p\, a_{1}^{2}/a_{2} \leq px$ | $x\, a_{1}/a_{2}$ | approximate          |
 
 In the first two rows, all of a customer’s rates are equal, so the gamma
-distribution in step 1 is the exact distribution of $`S \mid \nu_0`$,
-namely $`\text{Gamma}(px,\ \nu_0 e^{-\eta})`$. Substituting the table
-entries into the formula gives
+distribution in step 1 is the exact distribution of $S \mid \nu_{0}$,
+namely $\text{Gamma}\left( px,\ \nu_{0}e^{-\eta} \right)$. Substituting
+the table entries into the formula gives
 
-``` math
-f(\bar{z}) = \frac{\Gamma(px + q)}{\Gamma(px)\, \Gamma(q)} \cdot \frac{\left(x\, e^{-\eta}\right)^{px} \bar{z}^{\,px-1}\, \gamma^q}{\left(\gamma + x\, e^{-\eta}\, \bar{z}\right)^{px+q}},
-```
+$$f\left( \bar{z} \right) = \frac{\Gamma(px + q)}{\Gamma(px)\,\Gamma(q)} \cdot \frac{\left( x\, e^{-\eta} \right)^{px}{\bar{z}}^{\, px - 1}\,\gamma^{q}}{\left( \gamma + x\, e^{-\eta}\,\bar{z} \right)^{px + q}},$$
 
-which is the exact density of $`\bar{z}`$. With $`\eta = 0`$ it is
-Equation (1a) of Fader and Hardie (2013). Only the third row is an
-approximation. By the Cauchy–Schwarz inequality $`a_1^2 \le x\, a_2`$,
-so $`k \le px`$, with equality exactly when all of a customer’s
-covariate effects are equal, which is the case in the first two rows.
+which is the exact density of $\bar{z}$. With $\eta = 0$ it is Equation
+(1a) of Fader and Hardie (2013). Only the third row is an approximation.
+By the Cauchy–Schwarz inequality $a_{1}^{2} \leq x\, a_{2}$, so
+$k \leq px$, with equality exactly when all of a customer’s covariate
+effects are equal, which is the case in the first two rows.
 
 *How good is the approximation?* Because the mean and variance of
-$`S \mid \nu_0`$ are matched for every $`\nu_0`$, the mean and variance
-of $`\bar{z}`$ are reproduced exactly, whenever they exist. Higher
-moments are not matched, so the density itself is approximate. An exact
-density exists as an infinite series of gamma densities (Moschopoulos
-1985), but it is much heavier to compute. Since the purpose of this plot
-is to judge visually how well the model fits the data, an approximation
-that gets the mean and variance right is acceptable.
+$S \mid \nu_{0}$ are matched for every $\nu_{0}$, the mean and variance
+of $\bar{z}$ are reproduced exactly, whenever they exist. Higher moments
+are not matched, so the density itself is approximate. An exact density
+exists as an infinite series of gamma densities (Moschopoulos 1985), but
+it is much heavier to compute. Since the purpose of this plot is to
+judge visually how well the model fits the data, an approximation that
+gets the mean and variance right is acceptable.
 
 ``` r
-
 GGcov_plot_avg_spend(fit_varying, spend_data_sample)
 ```
 
@@ -308,7 +286,6 @@ with the observed averages of the rest. The split must be by customer,
 so that each customer’s transactions stay together.
 
 ``` r
-
 set.seed(2024)
 ids       <- unique(spend_data_sample$Id)
 train_ids <- sample(ids, length(ids) / 2)
@@ -339,60 +316,52 @@ A natural next question is how much a customer will spend on their
 *next* transaction.
 [`GGcov_expected_spend()`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_expected_spend.md)
 computes the **conditional expectation of the monetary value of a future
-transaction $`Z_k`$, given the customer’s observed history
-$`(z_1, \dots, z_x)`$ with covariates
-$`(\mathbf{w}_1, \dots, \mathbf{w}_x)`$, and the covariate values
-$`\mathbf{w}_k`$ of the future transaction, which are assumed known**.
-The covariates of a future transaction are inputs, not predictions: for
-example, the discount planned for the next purchase.
+transaction $Z_{k}$, given the customer’s observed history
+$\left( z_{1},\ldots,z_{x} \right)$ with covariates
+$\left( \mathbf{w}_{1},\ldots,\mathbf{w}_{x} \right)$, and the covariate
+values $\mathbf{w}_{k}$ of the future transaction, which are assumed
+known**. The covariates of a future transaction are inputs, not
+predictions: for example, the discount planned for the next purchase.
 
 The derivation has three steps (Fader and Hardie 2024).
 
 1.  *Posterior of the customer’s baseline rate.* The prior
-    $`\nu_0 \sim \text{Gamma}(q, \gamma)`$ multiplied by the customer’s
-    likelihood, which as a function of $`\nu_0`$ is proportional to
-    $`\nu_0^{px} e^{-\nu_0 B(x)}`$, gives
+    $\nu_{0} \sim \text{Gamma}(q,\gamma)$ multiplied by the customer’s
+    likelihood, which as a function of $\nu_{0}$ is proportional to
+    $\nu_{0}^{px}e^{-\nu_{0}B{(x)}}$, gives
 
-``` math
-\nu_0 \mid \text{history} \sim \text{Gamma}\left(px + q,\ \gamma + B(x)\right).
-```
+$$\nu_{0} \mid \text{history} \sim \text{Gamma}\left( px + q,\ \gamma + B(x) \right).$$
 
-The history enters only through the number of transactions $`x`$ and
-$`B(x) = \sum_{i=1}^{x} z_i e^{-\mathbf{w}_i\beta'}`$, the observed
-spends rescaled to the baseline (all covariates at zero).
+The history enters only through the number of transactions $x$ and
+$B(x) = \sum_{i = 1}^{x}z_{i}e^{-\mathbf{w}_{i}\beta\prime}$, the
+observed spends rescaled to the baseline (all covariates at zero).
 
-2.  *Expected spend given $`\nu_0`$.* For a future transaction with
-    covariates $`\mathbf{w}_k`$,
+2.  *Expected spend given $\nu_{0}$.* For a future transaction with
+    covariates $\mathbf{w}_{k}$,
 
-``` math
-E(Z_k \mid \nu_0, \mathbf{w}_k) = \frac{p\, e^{\mathbf{w}_k\beta'}}{\nu_0}.
-```
+$$E\left( Z_{k} \mid \nu_{0},\mathbf{w}_{k} \right) = \frac{p\, e^{\mathbf{w}_{k}\beta\prime}}{\nu_{0}}.$$
 
-3.  *Average over the posterior of $`\nu_0`$.* For a gamma distribution
-    with shape $`px + q > 1`$ and rate $`\gamma + B(x)`$,
-    $`E(1/\nu_0 \mid \text{history}) = (\gamma + B(x)) / (px + q - 1)`$.
+3.  *Average over the posterior of $\nu_{0}$.* For a gamma distribution
+    with shape $px + q > 1$ and rate $\gamma + B(x)$,
+    $E\left( 1/\nu_{0} \mid \text{history} \right) = \left( \gamma + B(x) \right)/(px + q - 1)$.
     Therefore
 
-``` math
-E(Z_k \mid z_1, \dots, z_x, \mathbf{w}_1, \dots, \mathbf{w}_x, \mathbf{w}_k) = \frac{p\left(\gamma + B(x)\right)}{px + q - 1}\, e^{\mathbf{w}_k\beta'}.
-```
+$$E\left( Z_{k} \mid z_{1},\ldots,z_{x},\mathbf{w}_{1},\ldots,\mathbf{w}_{x},\mathbf{w}_{k} \right) = \frac{p\left( \gamma + B(x) \right)}{px + q - 1}\, e^{\mathbf{w}_{k}\beta\prime}.$$
 
 This is Equation (8) of Fader and Hardie (2024).
 
-The expression can be read as a weighted average. Writing $`B(x)/x`$ for
+The expression can be read as a weighted average. Writing $B(x)/x$ for
 the customer’s average spend adjusted to the baseline,
 
-``` math
-E(Z_k \mid \cdot) = e^{\mathbf{w}_k\beta'} \left[ \frac{px}{px + q - 1} \cdot \frac{B(x)}{x} + \frac{q - 1}{px + q - 1} \cdot \frac{p\gamma}{q - 1} \right],
-```
+$$E\left( Z_{k} \mid \cdot \right) = e^{\mathbf{w}_{k}\beta\prime}\left\lbrack \frac{px}{px + q - 1} \cdot \frac{B(x)}{x} + \frac{q - 1}{px + q - 1} \cdot \frac{p\gamma}{q - 1} \right\rbrack,$$
 
 so the prediction shrinks the customer’s own (baseline-adjusted) average
-toward the population mean $`p\gamma/(q-1)`$, and the weight on the
-customer’s own history grows with the number of transactions $`x`$. The
-factor $`e^{\mathbf{w}_k\beta'}`$ then moves the prediction to the
+toward the population mean $p\gamma/(q - 1)$, and the weight on the
+customer’s own history grows with the number of transactions $x$. The
+factor $e^{\mathbf{w}_{k}\beta\prime}$ then moves the prediction to the
 covariate values of the future transaction. A customer with no history
-($`x = 0`$ and $`B(x) = 0`$) gets the prior expectation
-$`p\gamma e^{\mathbf{w}_k\beta'}/(q-1)`$, which requires $`q > 1`$.
+($x = 0$ and $B(x) = 0$) gets the prior expectation
+$p\gamma e^{\mathbf{w}_{k}\beta\prime}/(q - 1)$, which requires $q > 1$.
 
 Here we predict the next transaction of every customer in the sample at
 a 10% discount, keeping each customer’s gender and channel (taken from
@@ -400,7 +369,6 @@ their last observed row). `newdata` has one row per future transaction
 to predict, and `history` holds the observed transactions:
 
 ``` r
-
 last_rows <- spend_data_sample[!duplicated(spend_data_sample$Id, fromLast = TRUE), ]
 future <- last_rows[, c("Id", "discount", "gender", "channel")]
 future$discount <- 0.1
@@ -424,7 +392,6 @@ covariates are inputs, the same customers can be compared under
 different scenarios, here no discount against a 30% discount:
 
 ``` r
-
 spend_0  <- GGcov_expected_spend(fit_varying, transform(future, discount = 0),
                                  spend_data_sample)$expected_spend
 spend_30 <- GGcov_expected_spend(fit_varying, transform(future, discount = 0.3),
@@ -448,7 +415,6 @@ If covariates are fixed for each customer, repeat their values across
 the customer’s rows. The same function applies:
 
 ``` r
-
 fit_static <- GGcov_MLE(
   Price ~ gender + channel,
   data    = spend_data_sample,
@@ -474,11 +440,10 @@ print(fit_static)
 ### Checking the Fit
 
 With static covariates, each customer’s covariate effect is the same on
-every transaction, so the fitted density of $`\bar{z}`$ is exact and no
+every transaction, so the fitted density of $\bar{z}$ is exact and no
 approximation note appears:
 
 ``` r
-
 GGcov_plot_avg_spend(fit_static, spend_data_sample)
 ```
 
@@ -488,14 +453,12 @@ GGcov_plot_avg_spend(fit_static, spend_data_sample)
 
 With static covariates the future covariate values are known by
 construction: they are the customer’s own, unchanged, so
-$`\mathbf{w}_k = \mathbf{w}`$ for every transaction. Then
-$`B(x) = e^{-\mathbf{w}\beta'} \sum_{i=1}^{x} z_i = y\, e^{-\mathbf{w}\beta'}`$,
-where $`y`$ is the customer’s total observed spend, and the expression
+$\mathbf{w}_{k} = \mathbf{w}$ for every transaction. Then
+$B(x) = e^{-\mathbf{w}\beta\prime}\sum_{i = 1}^{x}z_{i} = y\, e^{-\mathbf{w}\beta\prime}$,
+where $y$ is the customer’s total observed spend, and the expression
 from Example 1 reduces to
 
-``` math
-E(Z_k \mid z_1, \dots, z_x, \mathbf{w}) = \frac{p\left(\gamma + y\, e^{-\mathbf{w}\beta'}\right)}{px + q - 1}\, e^{\mathbf{w}\beta'},
-```
+$$E\left( Z_{k} \mid z_{1},\ldots,z_{x},\mathbf{w} \right) = \frac{p\left( \gamma + y\, e^{-\mathbf{w}\beta\prime} \right)}{px + q - 1}\, e^{\mathbf{w}\beta\prime},$$
 
 which is Equation (4) of Fader and Hardie (2024). The time-varying
 expression therefore contains the static one as a special case, and the
@@ -503,7 +466,6 @@ same function computes both. We supply each customer’s static covariates
 as the covariates of the next transaction:
 
 ``` r
-
 customers <- spend_data_sample[!duplicated(spend_data_sample$Id),
                                c("Id", "gender", "channel")]
 
@@ -524,11 +486,10 @@ head(pred_static)
 
 ## Example 3: The Null Model
 
-Use `~ 1` to fit the model without covariates, which estimates only
-$`p`$, $`q`$ and $`\gamma`$:
+Use `~ 1` to fit the model without covariates, which estimates only $p$,
+$q$ and $\gamma$:
 
 ``` r
-
 fit_null <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
 print(fit_null)
 #> Gamma-gamma model 
@@ -548,7 +509,6 @@ fitted to the same data. The statistic is compared to a chi-square
 distribution with one degree of freedom per coefficient:
 
 ``` r
-
 lr <- 2 * (fit_null$value - fit_varying$value)
 df <- length(fit_varying$par) - length(fit_null$par)
 pchisq(lr, df = df, lower.tail = FALSE)
@@ -557,12 +517,11 @@ pchisq(lr, df = df, lower.tail = FALSE)
 
 ### Checking the Fit
 
-Without covariates, $`a_1 = a_2 = x`$, so $`k = px`$ and the fitted
-density of $`\bar{z}`$ is exact. This is the comparison shown in Figure
-3 of Fader and Hardie (2013):
+Without covariates, $a_{1} = a_{2} = x$, so $k = px$ and the fitted
+density of $\bar{z}$ is exact. This is the comparison shown in Figure 3
+of Fader and Hardie (2013):
 
 ``` r
-
 GGcov_plot_avg_spend(fit_null, spend_data_sample)
 ```
 
@@ -570,21 +529,18 @@ GGcov_plot_avg_spend(fit_null, spend_data_sample)
 
 ### Posterior Conditional Expectation of Future Spend
 
-Without covariates, $`e^{\mathbf{w}_k\beta'} = 1`$ and
-$`B(x) = \sum_{i=1}^{x} z_i = x\bar{z}`$, where $`\bar{z}`$ is the
+Without covariates, $e^{\mathbf{w}_{k}\beta\prime} = 1$ and
+$B(x) = \sum_{i = 1}^{x}z_{i} = x\bar{z}$, where $\bar{z}$ is the
 customer’s average observed spend. The conditional expectation of a
 future transaction’s monetary value given the history then simplifies to
 
-``` math
-E(Z_k \mid z_1, \dots, z_x) = \frac{p\left(\gamma + x\bar{z}\right)}{px + q - 1} = \frac{px}{px + q - 1}\, \bar{z} + \frac{q - 1}{px + q - 1} \cdot \frac{p\gamma}{q - 1},
-```
+$$E\left( Z_{k} \mid z_{1},\ldots,z_{x} \right) = \frac{p\left( \gamma + x\bar{z} \right)}{px + q - 1} = \frac{px}{px + q - 1}\,\bar{z} + \frac{q - 1}{px + q - 1} \cdot \frac{p\gamma}{q - 1},$$
 
 a weighted average of the customer’s observed average spend and the
-population mean $`p\gamma/(q-1)`$ (Fader and Hardie 2013). No covariate
+population mean $p\gamma/(q - 1)$ (Fader and Hardie 2013). No covariate
 values are needed, so `newdata` only has to identify the customers:
 
 ``` r
-
 customer_ids <- data.frame(Id = unique(spend_data_sample$Id))
 
 pred_null <- GGcov_expected_spend(fit_null,
@@ -605,7 +561,6 @@ shrinkage: customers with few transactions are pulled most strongly
 toward the population mean.
 
 ``` r
-
 observed <- aggregate(Price ~ Id, data = spend_data_sample, FUN = mean)
 names(observed)[2] <- "observed_mean"
 
@@ -654,7 +609,6 @@ head(comparison[order(comparison$n_trans), ])
 ## Session Information
 
 ``` r
-
 sessionInfo()
 #> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
@@ -679,14 +633,14 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] GammaGammaCov_0.0.0.9000
+#> [1] GammaGammaCov_0.1.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    
 #>  [5] xfun_0.62         cachem_1.1.0      knitr_1.52        htmltools_0.5.9  
 #>  [9] rmarkdown_2.32    lifecycle_1.0.5   cli_3.6.6         sass_0.4.10      
 #> [13] pkgdown_2.2.1     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2
-#> [17] compiler_4.6.2    rstudioapi_0.19.0 tools_4.6.2       ragg_1.5.2       
-#> [21] bslib_0.12.0      evaluate_1.0.5    yaml_2.3.12       otel_0.2.0       
-#> [25] jsonlite_2.0.0    htmlwidgets_1.6.4 rlang_1.3.0       fs_2.1.0
+#> [17] compiler_4.6.2    tools_4.6.2       ragg_1.5.2        bslib_0.12.0     
+#> [21] evaluate_1.0.5    yaml_2.3.12       otel_0.2.0        jsonlite_2.0.0   
+#> [25] rlang_1.3.0       fs_2.1.0          htmlwidgets_1.6.4
 ```

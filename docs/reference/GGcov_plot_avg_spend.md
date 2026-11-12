@@ -86,3 +86,14 @@ several different population variances are involved. *Biometrika*,
 Moschopoulos, P. G. (1985). The distribution of the sum of independent
 gamma random variables. *Annals of the Institute of Statistical
 Mathematics*, 37, 541-544.
+
+## Examples
+
+``` r
+fit <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+GGcov_plot_avg_spend(fit, spend_data_sample)
+```

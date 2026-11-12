@@ -96,3 +96,40 @@ covariate scale (only `hessian` is on the internal parameterization):
   Names of the outcome and subject columns used in the fit, so
   [`GGcov_expected_spend`](https://kaloklee.github.io/GammaGammaCov/reference/GGcov_expected_spend.md)
   can find them in new data.
+
+## Examples
+
+``` r
+fit <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+print(fit)
+#> Gamma-gamma model 
+#> 
+#>                      Estimate Std. Error Lower 95% Upper 95%
+#> p (shape)              1.9180    0.09844    1.7350    2.1210
+#> q (mixture shape)      9.6130    2.20000    6.1390   15.0500
+#> gamma (mixture rate) 238.6000   66.28000  138.5000  411.3000
+#> discount              -0.6560    0.17840   -1.0060   -0.3064
+#> gendermale            -0.2609    0.06924   -0.3967   -0.1252
+#> channelweb             0.3511    0.08093    0.1924    0.5097
+#> channelapp            -0.3867    0.08946   -0.5621   -0.2114
+#> 
+#> Negative log-likelihood: 3981.2844
+#> Convergence code: 0
+
+# Null model without covariates
+fit_null <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
+print(fit_null)
+#> Gamma-gamma model 
+#> 
+#>                      Estimate Std. Error Lower 95% Upper 95%
+#> p (shape)               1.901    0.09849     1.717     2.104
+#> q (mixture shape)       5.631    0.95590     4.037     7.853
+#> gamma (mixture rate)  106.000   22.53000    69.920   160.800
+#> 
+#> Negative log-likelihood: 4017.5628
+#> Convergence code: 0
+```

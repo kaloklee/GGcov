@@ -59,6 +59,14 @@ where \eqn{a_1 = \sum_j e^{w_j\beta'}}, \eqn{a_2 = \sum_j e^{2 w_j\beta'}},
     Satterthwaite-Welch approximation, which gives the expression above. The plot says so when this approximation is used.
 }
 }
+\examples{
+fit <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+GGcov_plot_avg_spend(fit, spend_data_sample)
+}
 \references{
 Fader, P. S., & Hardie, B. G. S. (2013). \emph{The Gamma-Gamma
   Model of Monetary Value} (Research Note No. 025).

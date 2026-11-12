@@ -49,6 +49,13 @@
 #'   Moschopoulos, P. G. (1985). The distribution of the sum of independent
 #'   gamma random variables. \emph{Annals of the Institute of Statistical
 #'   Mathematics}, 37, 541-544.
+#' @examples
+#' fit <- GGcov_MLE(
+#'   Price ~ discount + gender + channel,
+#'   data    = spend_data_sample,
+#'   subject = "Id"
+#' )
+#' GGcov_plot_avg_spend(fit, spend_data_sample)
 #' @export
 #' @importFrom graphics plot lines legend mtext title
 #' @importFrom stats density quantile model.frame model.matrix na.fail approx

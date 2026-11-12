@@ -64,3 +64,23 @@ covers all cases:
 Fader, P. S., & Hardie, B. G. S. (2024). *Incorporating Covariates in
 the Gamma-Gamma Spend Model* (Research Note No. 045).
 <https://brucehardie.com/notes/045/>
+
+## Examples
+
+``` r
+fit <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+last_rows <- spend_data_sample[!duplicated(spend_data_sample$Id, fromLast = TRUE), ]
+future <- last_rows[1:5, c("Id", "discount", "gender", "channel")]
+future$discount <- 0.1
+GGcov_expected_spend(fit, newdata = future, history = spend_data_sample)
+#>   Id n_trans expected_spend
+#> 1  1       2       32.23626
+#> 2  5      12       49.09745
+#> 3  6       3       84.06568
+#> 4  9       2       25.53577
+#> 5 10       2       48.92893
+```

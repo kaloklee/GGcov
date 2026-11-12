@@ -41,3 +41,11 @@ With covariates in the model, nu0 is the rate for a subject whose covariates
 are all 0 on the original scale (the fitted coefficients are on the original
 scale), so the plotted distribution describes that baseline.
 }
+\examples{
+fit <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+GGcov_plot_mixing(fit)
+}

@@ -20,3 +20,7 @@
 \description{
 Print a Fitted Equation (6) Model
 }
+\examples{
+fit <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
+print(fit, digits = 3)
+}

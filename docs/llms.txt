@@ -12,14 +12,12 @@ following the methodology of Fader and Hardie (2024).
 Install the released version from CRAN:
 
 ``` r
-
 install.packages("GammaGammaCov")
 ```
 
 Or install the development version from GitHub:
 
 ``` r
-
 # install.packages("remotes")
 remotes::install_github("kaloklee/GammaGammaCov")
 ```
@@ -38,7 +36,6 @@ Here we demonstrate estimation using `spend_data_sample`, a small
 simulated dataset included for rapid experimentation and testing:
 
 ``` r
-
 library(GammaGammaCov)
 
 # Load the quick-start sample dataset
@@ -67,7 +64,6 @@ values of that transaction (assumed known). Here we predict each
 customer’s next transaction at a 10% discount:
 
 ``` r
-
 # Each customer's gender and channel, taken from their last observed row
 last_rows <- spend_data_sample[!duplicated(spend_data_sample$Id, fromLast = TRUE), ]
 future <- last_rows[, c("Id", "discount", "gender", "channel")]
@@ -86,7 +82,6 @@ vignette](https://kaloklee.github.io/GammaGammaCov/articles/introduction_to_ggco
 online, or build it locally:
 
 ``` r
-
 remotes::install_github("kaloklee/GammaGammaCov", build_vignettes = TRUE)
 vignette("introduction_to_ggcov_vignette", package = "GammaGammaCov")
 ```
@@ -107,7 +102,7 @@ vignette("introduction_to_ggcov_vignette", package = "GammaGammaCov")
 ## License & Contact
 
 Licensed under the [Apache License
-2.0](https://kaloklee.github.io/GammaGammaCov/LICENSE).\
+2.0](https://kaloklee.github.io/GammaGammaCov/LICENSE).  
 Questions, issues, or contributions: Ka Lok Lee (<kaloklee@gmail.com>).
 
 # Package index

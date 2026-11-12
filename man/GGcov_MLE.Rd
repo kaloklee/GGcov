@@ -60,3 +60,16 @@ gamma(q, gamma) distribution that is integrated out (equation 6). Covariates
 are centered and scaled internally for numerical stability, and the results
 are converted back to the original covariate scale.
 }
+\examples{
+fit <- GGcov_MLE(
+  Price ~ discount + gender + channel,
+  data    = spend_data_sample,
+  subject = "Id"
+)
+print(fit)
+
+# Null model without covariates
+fit_null <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
+print(fit_null)
+
+}

@@ -5,6 +5,9 @@
 #' @param digits Number of significant digits to print. Default 4.
 #' @param ... Unused.
 #' @return \code{x}, invisibly.
+#' @examples
+#' fit <- GGcov_MLE(Price ~ 1, data = spend_data_sample, subject = "Id")
+#' print(fit, digits = 3)
 #' @export
 print.GGcov <- function(x, digits = 4, ...) {
   lvl <- format(100 * x$level, trim = TRUE)
